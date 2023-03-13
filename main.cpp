@@ -31,7 +31,7 @@ public:
 
     ///operator<<
     friend std::ostream& operator<<(std::ostream& os, const Crew& crew) {
-        os << "Nume: " << crew.name << ", varsta: " << crew.age;
+        os << "Nume: " << crew.name << ", varsta: " << crew.age << "\n";
         return os;
     }
 };
@@ -67,7 +67,7 @@ public:
 
     ///operator<<
     friend std::ostream& operator<<(std::ostream& os, const Review& review) {
-        os << "Rating: " << review.rating << "\n" << review.content;
+        os << "Rating: " << review.rating << "\n" << review.content << "\n";
         return os;
     }
 };
@@ -149,14 +149,12 @@ public:
         os << "Sinopsis: " << film.synopsis << "\n";
         os << "Distributie:\n";
         for (const auto& actor : film.cast) {
-            os << actor << " ";
+            os << actor << "\n";
         }
-        os << "\n";
         os << "Recenzii populare:\n";
         for (const auto& review : film.reviews) {
-            os << review << " ";
+            os << review << "\n";
         }
-        os << "\n";
         os << "Rating mediu: " << film.average_rating;
         return os;
     }
@@ -206,7 +204,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Library& library) {
         os << "Filmele vizionate: ";
         for (const auto& film : library.watched_films) {
-            os << film.first << " " << film.second << "\n";
+            os << film.first << "\n" << film.second << "\n";
         }
         return os;
     }
@@ -284,14 +282,12 @@ public:
         return film_not_found;
     }
 
-    static bool cmp(const std::pair <Film, Review>& w1, const std::pair <Film, Review>& w2) {
-        return w1.second.get_rating() > w2.second.get_rating();
-    }
-
     void sort_rating() {
-        std::sort(watched_films.begin(), watched_films.end(), cmp);
+        for (auto it=watched_films.begin(); it+1!=watched_films.end(); it++)
+            for (auto it2=it+1; it2!=watched_films.end(); it2++)
+                if (it->second.get_rating() < it2->second.get_rating())
+                    std::swap(*it, *it2);
     }
-
 };
 
 
