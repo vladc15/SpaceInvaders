@@ -289,7 +289,7 @@ public:
     }
 
     void sort_rating() {
-        sort(watched_films.begin(), watched_films.end(), cmp);
+        std::sort(watched_films.begin(), watched_films.end(), cmp);
     }
 
 };
