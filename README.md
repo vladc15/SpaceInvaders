@@ -5,10 +5,11 @@
 - [x] Nume proiect (poate fi schimbat ulterior)
   - Space Invaders
 - [x] Scurtă descriere a temei alese, ce v-ați propus să implementați
-  - Space Invaders este un joc arcade ce a aparut la sfarsitul anilor '70 in Japonia. Jucatorul controleaza o nava spatiala si trebuie sa infranga fiecare wave de extraterestri care apare. 
-
+  - Space Invaders este un joc arcade, de tip shooter, ce a aparut la sfarsitul anilor '70 in Japonia. Jucatorul controleaza o nava spatiala si trebuie sa infranga fiecare wave de extraterestri care apare, acumuland puncte. 
+  - Gameplay: https://youtu.be/MU4psw3ccUI
 ## Tema 1
   - Pentru Tema 1 am implementat o prima parte a jocului, in care jucatorul trebuie sa castige in fata unui singur inamic.
+    - De asemenea, printre ultimele commit-uri se gaseste si inceputul unui alt proiect ce verifica primele cerinte - letterboxd. 
 #### Cerințe
 - [x] definirea a minim 3-4 clase folosind compunere
 - [x] constructori de inițializare
