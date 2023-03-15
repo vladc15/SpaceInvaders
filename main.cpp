@@ -175,10 +175,11 @@ public:
     }
 
     void move() {
-        if (position.getX() > 800-32 || position.getX() < 32)
+        if (position.getX() > 800-32 || position.getX() < 0) {
             direction *= -1;
+            position.setY(position.getY() + 5.0f);
+        }
         position.setX(position.getX() + direction * 2.0f);
-        position.setY(position.getY() + 0.1f);
         sprite.setPosition(position.getX(), position.getY());
     }
 
@@ -226,9 +227,9 @@ int main() {
     std::random_device rd;
     std::mt19937 rng(rd());
     rng.seed(rd());
-    std::uniform_int_distribution<int> dist(0, 800);
+    std::uniform_int_distribution<int> dist(0, 800-32);
 
-    enemy.setPosition(Point((float)dist(rng), 100)); /// facem random si poz
+    enemy.setPosition(Point((float)dist(rng), 150)); /// facem random si poz
 
 
     sf::Clock clock;
