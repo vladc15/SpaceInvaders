@@ -86,11 +86,13 @@ class Player {
     sf::Sprite sprite;
     sf::Texture texture;
     sf::Texture bulletTexture;
+    sf::Clock bulletCooldown;
+    int bulletCooldownTime = 100;
 
 public:
     /// constructor + destructor
-    Player() : position(0, 0) { bulletVector.clear(); }
-    Player(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_) : position(x_, y_), sprite(texture_), bulletTexture(bulletTexture_) { bulletVector.clear(); sprite.setPosition(x_, y_);}
+    Player() : position(0, 0) { bulletVector.clear(); bulletCooldown.restart();}
+    Player(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, int bulletCooldownTime_) : position(x_, y_), sprite(texture_), bulletTexture(bulletTexture_), bulletCooldownTime(bulletCooldownTime_) { bulletVector.clear(); bulletCooldown.restart(); sprite.setPosition(x_, y_);}
     ~Player() { std::cout << "Player destructor\n";}
 
 
@@ -103,7 +105,7 @@ public:
     //void setBulletVector(std::vector<Bullet> bulletVector) { this->bulletVector = bulletVector; }
 
     /// cc
-    Player(const Player& other) : position{other.position}, bulletVector{other.bulletVector} {}
+    Player(const Player& other) : position{other.position}, bulletVector{other.bulletVector}, bulletCooldownTime{other.bulletCooldownTime} {}
 
     /// operator=
     /*Player& operator=(const Player& other) {
@@ -128,7 +130,10 @@ public:
     }
 
     void shoot() {
-        bulletVector.emplace_back(position.getX(), position.getY(), bulletTexture);
+        if (bulletCooldown.getElapsedTime().asMilliseconds() > bulletCooldownTime){
+            bulletCooldown.restart();
+            bulletVector.emplace_back(position.getX(), position.getY(), bulletTexture);
+        }
     }
 
 };
@@ -207,14 +212,14 @@ int main() {
     playerTexture.loadFromFile("../player.png");
     bulletTexture.loadFromFile("../bulletP.png");
     enemyTexture.loadFromFile("../enemy.png");
-    Player player(350, 500, playerTexture, bulletTexture);
+    Player player(350, 500, playerTexture, bulletTexture, 150);
     Enemy enemy(350, 100, 1, enemyTexture, bulletTexture);
 
     /// testarea obiectelor Bullet, Player, Enemy
     Bullet b1(0, 0, bulletTexture), b2;
     b2 = b1;
     std::cout << b1 << b2 << "\n";
-    Player player2, player1(1, 1, playerTexture, bulletTexture);
+    Player player2, player1(1, 1, playerTexture, bulletTexture, 20);
     player2 = player1;
     std::cout << player1 << "\n" << player2 << "\n";
     Enemy e1;
