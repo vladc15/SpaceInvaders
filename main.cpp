@@ -136,6 +136,17 @@ public:
         }
     }
 
+    void moveBullets() {
+        std::vector<Bullet>& playerBullet = getBulletVector();
+        for (auto it = playerBullet.begin(); it != playerBullet.end(); ) {
+            it->move(-1);
+            if (it->getPosition().getY() < 0)
+                it = playerBullet.erase(it);
+            else
+                ++it;
+        }
+    }
+
 };
 
 class Enemy {
@@ -190,6 +201,17 @@ public:
 
     void shoot() {
         bulletVector.emplace_back(position.getX() + 16, position.getY() + 32, bulletTexture);
+    }
+
+    void moveBullets() {
+        std::vector<Bullet>& enemyBullet = getBulletVector();
+        for (auto it = enemyBullet.begin(); it != enemyBullet.end(); ) {
+            it->move(1);
+            if (it->getPosition().getY() > 600)
+                it = enemyBullet.erase(it);
+            else
+                ++it;
+        }
     }
 
 };
@@ -256,25 +278,13 @@ int main() {
                     player.shoot();
 
         std::vector<Bullet>& playerBullet = player.getBulletVector();
-        for (auto it = playerBullet.begin(); it != playerBullet.end(); ) {
-            it->move(-1);
-            if (it->getPosition().getY() < 0)
-                it = playerBullet.erase(it);
-            else
-                ++it;
-        }
+        player.moveBullets();
 
         enemy.move();
         if (dist(rng) % 100 < 2)
             enemy.shoot();
         std::vector<Bullet>& enemyBullet = enemy.getBulletVector();
-        for (auto it = enemyBullet.begin(); it != enemyBullet.end(); ) {
-            it->move(1);
-            if (it->getPosition().getY() > 600)
-                it = enemyBullet.erase(it);
-            else
-                ++it;
-        }
+        enemy.moveBullets();
 
         for (auto& bullet : playerBullet) {
             if (enemy.getSprite().getGlobalBounds().intersects( bullet.getSprite().getGlobalBounds() ) ) {
