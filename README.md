@@ -1,4 +1,4 @@
-# OOP Template
+# Space Invaders
 
 ### Tema 0
 
@@ -9,7 +9,7 @@
   - Gameplay: https://youtu.be/MU4psw3ccUI
 ## Tema 1
   - Pentru Tema 1 am implementat o prima parte a jocului, in care jucatorul trebuie sa castige in fata unui singur inamic.
-    - De asemenea, printre ultimele commit-uri se gaseste si inceputul unui alt proiect ce verifica primele cerinte - letterboxd. 
+    - De asemenea, printre primele commit-uri se gaseste si inceputul unui alt proiect ce verifica cerintele - letterboxd. 
 #### Cerințe
 - [x] definirea a minim 3-4 clase folosind compunere
 - [x] constructori de inițializare
@@ -22,8 +22,8 @@
 - [x] scenariu de utilizare a claselor definite:
   - crearea de obiecte și apelarea funcțiilor membru publice în main
   - vor fi adăugate în fișierul `tastatura.txt` exemple de date de intrare de la tastatură (dacă există)
-- [ ] tag de `git`: de exemplu `v0.1`
-- [ ] serviciu de integrare continuă (CI); exemplu: GitHub Actions
+- [x] tag de `git`: de exemplu `v0.1`
+- [x] serviciu de integrare continuă (CI); exemplu: GitHub Actions
 
 ## Tema 2
 
@@ -58,4 +58,4 @@
 ## Resurse
 
 - [SFML](https://github.com/SFML/SFML/tree/aa82ea132b9296a31922772027ad5d14c1fa381b) (Zlib)
-- adăugați trimiteri către resursele externe care v-au ajutat sau pe care le-ați folosit
+- Imaginile folosite pentru texturi au fost preluate din repo-ul https://github.com/Th3NiKo/Space-Invaders
