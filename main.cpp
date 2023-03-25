@@ -352,7 +352,6 @@ int main() {
         //std::this_thread::sleep_for(std::chrono::duration<double, std::milli> (0.9));
         //std::this_thread::sleep_for(std::chrono::milliseconds (10));
         // prea incet??
-
         //std::this_thread::sleep_for(std::chrono::microseconds (900)); // diferenta prea mare intre 990 si 1000?
 
         /// mesajele de la cc, constructor si destructor pentru point si bullet dau delay
