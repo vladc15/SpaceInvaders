@@ -143,4 +143,4 @@ endif()
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 # install(DIRECTORY some_dir1 some_dir2 DESTINATION bin)
 
-install(FILES player.png enemy.png bulletP.png DESTINATION cmake-build-debug)
+install(FILES player.png enemy.png bulletP.png DESTINATION bin)

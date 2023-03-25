@@ -261,9 +261,9 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Space Invaders");
 
     sf::Texture playerTexture, bulletTexture, enemyTexture;
-    playerTexture.loadFromFile("../player.png");
-    bulletTexture.loadFromFile("../bulletP.png");
-    enemyTexture.loadFromFile("../enemy.png");
+    playerTexture.loadFromFile("C:/Users/vciup/Desktop/C++/OOP/player.png");
+    bulletTexture.loadFromFile("C:/Users/vciup/Desktop/C++/OOP/bulletP.png");
+    enemyTexture.loadFromFile("C:/Users/vciup/Desktop/C++/OOP/enemy.png");
     Player player(350, 500, playerTexture, bulletTexture, 150);
     Enemy enemy(350, 100, 1, enemyTexture, bulletTexture);
 
