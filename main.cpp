@@ -3,11 +3,17 @@
 #include <string>
 #include <vector>
 #include <random>
+//#include <chrono>
+//#include <thread>
 
 #ifdef __linux__
 #include <X11/Xlib.h>
 #endif
 
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+const int ENTITY_SIZE = 36;
+const int BULLET_SIZE = 16;
 
 class Point {
     float x;
@@ -105,7 +111,8 @@ public:
     //void setBulletVector(std::vector<Bullet> bulletVector) { this->bulletVector = bulletVector; }
 
     /// cc
-    Player(const Player& other) : position{other.position}, bulletVector{other.bulletVector}, bulletCooldownTime{other.bulletCooldownTime} {}
+    //Player(const Player& other) : position{other.position}, bulletVector{other.bulletVector}, bulletCooldownTime{other.bulletCooldownTime} {}
+    Player(const Player& other) = default;
 
     /// operator=
     /*Player& operator=(const Player& other) {
@@ -113,6 +120,7 @@ public:
         bulletVector = other.bulletVector;
         return *this;
     }*/
+    /// warning pentru operator= de la clion
     Player& operator=(const Player& other) = default;
 
     /// operator<<
@@ -124,7 +132,7 @@ public:
     void move(int direction) {
         if (direction == 0 && position.getX() > 0)
             position.setX(position.getX() - 2);
-        else if (direction == 1 && position.getX() < 800-32)
+        else if (direction == 1 && position.getX() < SCREEN_WIDTH-ENTITY_SIZE-2)
             position.setX(position.getX() + 2);
         sprite.setPosition(position.getX(), position.getY());
     }
@@ -138,13 +146,19 @@ public:
 
     void moveBullets() {
         std::vector<Bullet>& playerBullet = getBulletVector();
-        for (auto it = playerBullet.begin(); it != playerBullet.end(); ) {
+        auto it1 = playerBullet.begin();
+        for (auto it = playerBullet.begin(); it != playerBullet.end(); it++) {
             it->move(-1);
             if (it->getPosition().getY() < 0)
-                it = playerBullet.erase(it);
-            else
-                ++it;
+                it1 = it;
         }
+        playerBullet.erase(playerBullet.begin(), it1);
+    }
+
+    int intersects(const Bullet& bullet) {
+        //return sprite.getGlobalBounds().intersects( bullet.getSprite().getGlobalBounds() );
+        return (position.getX() < bullet.getPosition().getX() + BULLET_SIZE) && (position.getX() + ENTITY_SIZE > bullet.getPosition().getX())
+               && (position.getY() < bullet.getPosition().getY() + BULLET_SIZE) && (position.getY() + ENTITY_SIZE > bullet.getPosition().getY());
     }
 
 };
@@ -191,7 +205,7 @@ public:
     }
 
     void move() {
-        if (position.getX() > 800-32 || position.getX() < 0) {
+        if (position.getX() > SCREEN_WIDTH-ENTITY_SIZE || position.getX() < 0) {
             direction *= -1;
             position.setY(position.getY() + 5.0f);
         }
@@ -200,20 +214,36 @@ public:
     }
 
     void shoot() {
-        bulletVector.emplace_back(position.getX() + 16, position.getY() + 32, bulletTexture);
+        bulletVector.emplace_back(position.getX() + BULLET_SIZE, position.getY() + 2*BULLET_SIZE, bulletTexture);
     }
 
     void moveBullets() {
         std::vector<Bullet>& enemyBullet = getBulletVector();
-        for (auto it = enemyBullet.begin(); it != enemyBullet.end(); ) {
+        auto it1 = enemyBullet.begin();
+        for (auto it = enemyBullet.begin(); it != enemyBullet.end(); it++) {
             it->move(1);
-            if (it->getPosition().getY() > 600)
-                it = enemyBullet.erase(it);
-            else
-                ++it;
+            if (it->getPosition().getY() > SCREEN_HEIGHT)
+                it1 = it;
         }
+        enemyBullet.erase(enemyBullet.begin(), it1);
     }
 
+    bool intersects(const Bullet& bullet) {
+        /*
+         position.getX() == sprite.getGlobalBounds().left
+         position.getY() == sprite.getGlobalBounds().top
+         sprite.getGlobalBounds().height = 36
+         sprite.getGlobalBounds().width = 36
+         bullet.getSprite().getGlobalBounds().height = 16
+         bullet.getSprite().getGlobalBounds().width = 16
+         bullet.getSprite().getGlobalBounds().left == bullet.getPosition().getX()
+         bullet.getSprite().getGlobalBounds().top == bullet.getPosition().getY()
+         */
+        //return sprite.getGlobalBounds().intersects( bullet.getSprite().getGlobalBounds() );
+
+        return (position.getX() < bullet.getPosition().getX() + BULLET_SIZE) && (position.getX() + ENTITY_SIZE > bullet.getPosition().getX())
+                && (position.getY() < bullet.getPosition().getY() + BULLET_SIZE) && (position.getY() + ENTITY_SIZE > bullet.getPosition().getY());
+    }
 };
 
 
@@ -228,7 +258,7 @@ int main() {
     std::cout << p1 << p2 << "\n";
 
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Space Invaders");
+    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Space Invaders");
 
     sf::Texture playerTexture, bulletTexture, enemyTexture;
     playerTexture.loadFromFile("../player.png");
@@ -254,10 +284,9 @@ int main() {
     std::random_device rd;
     std::mt19937 rng(rd());
     rng.seed(rd());
-    std::uniform_int_distribution<int> dist(0, 800-32);
+    std::uniform_int_distribution<int> dist(0, SCREEN_WIDTH-ENTITY_SIZE);
 
     enemy.setPosition(Point((float)dist(rng), 150)); /// facem random si poz
-
 
     sf::Clock clock;
 
@@ -287,7 +316,7 @@ int main() {
         enemy.moveBullets();
 
         for (auto& bullet : playerBullet) {
-            if (enemy.getSprite().getGlobalBounds().intersects( bullet.getSprite().getGlobalBounds() ) ) {
+            if (enemy.intersects(bullet)) {
                 playerBullet.pop_back();
                 std::cout << "You Win!\n";
                 window.close();
@@ -296,7 +325,7 @@ int main() {
         }
 
         for (auto& bullet : enemyBullet) {
-            if (player.getSprite().getGlobalBounds().intersects( bullet.getSprite().getGlobalBounds() ) ) {
+            if (player.intersects(bullet)) {
                 //enemyBullet.pop_back();
                 std::cout << "Game Over:(\n";
                 window.close();
@@ -317,8 +346,14 @@ int main() {
         window.display();
 
         /// cat sa astepte intre frame uri
-        while (clock.getElapsedTime().asMilliseconds() < 1000 / 100) {}
+        while (clock.getElapsedTime().asMilliseconds() < 10) {}
         clock.restart();
+        //std::this_thread::sleep_for(std::chrono::microseconds (990));
+        //std::this_thread::sleep_for(std::chrono::duration<double, std::milli> (0.9));
+        //std::this_thread::sleep_for(std::chrono::milliseconds (10));
+        // prea incet??
+
+        //std::this_thread::sleep_for(std::chrono::microseconds (900)); // diferenta prea mare intre 990 si 1000?
 
         /// mesajele de la cc, constructor si destructor pentru point si bullet dau delay
     }
