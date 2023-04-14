@@ -93,7 +93,7 @@ endif()
 ###############################################################################
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp Point.cpp Point.h Bullet.cpp Bullet.h)
 
 ###############################################################################
 
@@ -143,4 +143,4 @@ endif()
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 # install(DIRECTORY some_dir1 some_dir2 DESTINATION bin)
 
-install(FILES player.png enemy.png bulletP.png DESTINATION bin)
+install(FILES player.png enemy.png bulletP.png background.jpg DESTINATION bin)
