@@ -543,7 +543,7 @@ int main() {
             clock.restart();
         }
 
-        if (transition && !displayMenu && !endGame) {
+        if (transition && !endGame) {
 
             window.clear(sf::Color::Black);
 
@@ -643,7 +643,7 @@ int main() {
         if (displayMenu)
             continue;
 
-        if (transition && !displayMenu && !endGame)
+        if (transition && !endGame)
             continue;
 
         if (endGame != 0)
