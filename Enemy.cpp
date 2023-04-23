@@ -13,7 +13,7 @@ Enemy::Enemy() : Entity() { bulletVector.clear(); sprite.setPosition(0, 0);}
 Enemy::Enemy(float x_, float y_, float direction_, sf::Texture &texture_, sf::Texture &bulletTexture_, bool alive_,
              float speed_, int health_) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), direction(direction_) { bulletVector.clear(); sprite.setPosition(x_, y_);}
 
-std::shared_ptr<Entity> Enemy::clone() const {
+[[maybe_unused]] std::shared_ptr<Entity> Enemy::clone() const {
     return std::make_shared<Enemy>(*this);
 }
 

@@ -13,7 +13,7 @@ Player::Player() : Entity() { bulletVector.clear(); bulletCooldown.restart();}
 Player::Player(float x_, float y_, sf::Texture &texture_, sf::Texture &bulletTexture_, int bulletCooldownTime_,
                bool alive_, float speed_, int health_) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), bulletCooldownTime(bulletCooldownTime_) { bulletVector.clear(); bulletCooldown.restart(); sprite.setPosition(x_, y_);}
 
-std::shared_ptr<Entity> Player::clone() const {
+[[maybe_unused]] std::shared_ptr<Entity> Player::clone() const {
     return std::make_shared<Player>(*this);
 }
 
