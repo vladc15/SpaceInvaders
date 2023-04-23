@@ -5,6 +5,9 @@
 #include <random>
 //#include <chrono>
 //#include <thread>
+#include <memory>
+//#include <utility>
+
 #include "Point.h"
 #include "Bullet.h"
 
@@ -19,7 +22,9 @@ const int BULLET_SIZE = 16;
 const int ENEMY_POINTS = 20;
 const int BOSS_POINTS = 90;
 
-/*class Entity {
+class Entity {
+
+protected:
     Point position;
     sf::Sprite sprite;
     sf::Texture texture;
@@ -27,71 +32,98 @@ const int BOSS_POINTS = 90;
     std::vector<Bullet> bulletVector;
     bool alive;
     float speed;
+    int health; /// pentru enemy sa fie 1, pentru boss sa fie 3, iar pentru player sa fie 3 (hard mode: 1)
+
+
+    Entity(const Entity& other) = default;
+    Entity& operator=(const Entity& other) = default;
+//    Entity(const Entity& other) : position{other.position}, texture{other.texture}, bulletTexture{other.bulletTexture}, bulletVector{other.bulletVector}, alive{other.alive}, speed{other.speed}, health{other.health} {sprite.setTexture(texture); sprite.setPosition(position.getX(), position.getY());}
+//    Entity& operator=(const Entity& other) {
+//        position = other.position;
+//        texture = other.texture;
+//        bulletTexture = other.bulletTexture;
+//        bulletVector = other.bulletVector;
+//        alive = other.alive;
+//        speed = other.speed;
+//        health = other.health;
+//        sprite.setTexture(texture);
+//        sprite.setPosition(position.getX(), position.getY());
+//        return *this;
+//    }
+
+private:
+    virtual void print(std::ostream& ) const {}
+
+    virtual void moveSingleBullet(Bullet& bullet) const = 0;
 
 public:
     /// constructor + destructor
-    Entity() : position(0, 0), alive(true), speed(0) { bulletVector.clear(); }
-    Entity(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, bool alive_, float speed_) : position(x_, y_), sprite(texture_), bulletTexture(bulletTexture_), alive(alive_), speed(speed_) { bulletVector.clear(); sprite.setPosition(x_, y_);}
-    ~Entity() { std::cout << "Entity destructor\n";}
+
+    /// cu std::move eventual
+    explicit Entity() : position(0, 0), alive(true), speed(0), health(0) { bulletVector.clear(); }
+    explicit Entity(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, bool alive_, float speed_, int health_) : position(x_, y_), sprite(texture_), bulletTexture(bulletTexture_), alive(alive_), speed(speed_), health(health_) { bulletVector.clear(); sprite.setPosition(x_, y_);}
+    //virtual ~Entity() { std::cout << "Entity destructor\n"; }
+    virtual ~Entity() = default;
+
+    [[maybe_unused]] virtual std::shared_ptr<Entity> clone() const = 0;
+
+    //Entity() : position(0, 0), alive(true), speed(0) { bulletVector.clear(); }
+    //Entity(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, bool alive_, float speed_) : position(x_, y_), sprite(texture_), bulletTexture(bulletTexture_), alive(alive_), speed(speed_) { bulletVector.clear(); sprite.setPosition(x_, y_);}
+    //~Entity() { std::cout << "Entity destructor\n";}
 
     /// getters + setters
-    Point getPosition() const { return position; }
-    std::vector<Bullet>& getBulletVector() { return bulletVector; }
-    sf::Sprite& getSprite() { return sprite; }
-    bool getAlive() const { return alive; }
-    float getSpeed() const { return speed; }
-
-    void setPosition(const Point& position_) { this->position = position_; }
-    void setAlive(bool alive_) { this->alive = alive_; }
-    void setSpeed(float speed_) { this->speed = speed_; }
+//    Point getPosition() const { return position; }
+//    std::vector<Bullet>& getBulletVector() { return bulletVector; }
+//    sf::Sprite& getSprite() { return sprite; }
+//    bool getAlive() const { return alive; }
+//    float getSpeed() const { return speed; }
+//
+//    void setPosition(const Point& position_) { this->position = position_; }
+//    void setAlive(bool alive_) { this->alive = alive_; }
+//    void setSpeed(float speed_) { this->speed = speed_; }
 
     /// cc
-    Entity(const Entity& other) : position{other.position}, bulletVector{other.bulletVector}, alive{other.alive}, speed{other.speed} {}
+//    Entity(const Entity& other) : position{other.position}, bulletVector{other.bulletVector}, alive{other.alive}, speed{other.speed} {}
 
     /// operator=
-    Entity& operator=(const Entity& other) {
-        position = other.position;
-        bulletVector = other.bulletVector;
-        alive = other.alive;
-        speed = other.speed;
-        std::cout << "Entity operator=\n";
-        return *this;
-    }
+//    Entity& operator=(const Entity& other) {
+//        position = other.position;
+//        bulletVector = other.bulletVector;
+//        alive = other.alive;
+//        speed = other.speed;
+//        std::cout << "Entity operator=\n";
+//        return *this;
+//    }
 
     /// operator<<
     friend std::ostream& operator<<(std::ostream& os, const Entity& entity){
-        os << "x: " << entity.position.getX() << " y: " << entity.position.getY();
+        os << "Entity: " << entity.position.getX() << " y: " << entity.position.getY() << "health: " << entity.health;
+        entity.print(os);
+        os << "\n";
         return os;
     }
 
+    virtual void move() = 0;
+    virtual void move(int direction_) = 0;
+//    void move(int direction) {
+//        position.setY(position.getY() + (float)direction * speed);
+//        sprite.setPosition(position.getX(), position.getY());
+//    }
 
-    void move(int direction) {
-        position.setY(position.getY() + (float)direction * speed);
-        sprite.setPosition(position.getX(), position.getY());
-    }
-
-    void shoot() {
-        bulletVector.emplace_back(position.getX() + ENTITY_SIZE / 2.0f - BULLET_SIZE / 2.0f, position.getY() + ENTITY_SIZE / 2.0f - BULLET_SIZE / 2.0f, bulletTexture);
-    }
+    virtual void shoot() = 0;
+//    void shoot() {
+//        bulletVector.emplace_back(position.getX() + ENTITY_SIZE / 2.0f - BULLET_SIZE / 2.0f, position.getY() + ENTITY_SIZE / 2.0f - BULLET_SIZE / 2.0f, bulletTexture);
+//    }
 
     void moveBullets() {
         auto it1 = bulletVector.begin();
         for (auto it = bulletVector.begin(); it != bulletVector.end(); it++) {
-            it->move(-1);
-            if (it->getPosition().getY() < 0)
+            //it->move(-1);
+            moveSingleBullet(*it);
+            if (it->getPosition().getY() < 0 || it->getPosition().getY() > SCREEN_HEIGHT)
                 it1 = it;
         }
         bulletVector.erase(bulletVector.begin(), it1);
-    }
-
-    int intersectsEntity(const Entity& other) {
-        if (position.getX() + ENTITY_SIZE < other.position.getX() || position.getX() > other.position.getX() + ENTITY_SIZE) {
-            return 0;
-        }
-        if (position.getY() + ENTITY_SIZE < other.position.getY() || position.getY() > other.position.getY() + ENTITY_SIZE) {
-            return 0;
-        }
-        return 1;
     }
 
     int intersectsBullet(const Bullet& bullet) {
@@ -99,9 +131,248 @@ public:
                && (position.getY() < bullet.getPosition().getY() + BULLET_SIZE) && (position.getY() + ENTITY_SIZE > bullet.getPosition().getY());
     }
 
+    bool intersectsEntity(const Entity& entity) {
+        return (position.getX() < entity.position.getX() + ENTITY_SIZE) && (position.getX() + ENTITY_SIZE > entity.position.getX())
+               && (position.getY() < entity.position.getY() + ENTITY_SIZE) && (position.getY() + ENTITY_SIZE > entity.position.getY());
+    }
+};
 
-};*/
 
+class Player : public Entity {
+    sf::Clock bulletCooldown;
+    int bulletCooldownTime = 100;
+
+    void print(std::ostream& os) const override {
+        os << "Player:" << bulletCooldownTime;
+    }
+
+    void moveSingleBullet(Bullet& bullet) const override {
+        bullet.move(-1);
+    }
+
+public:
+    /// constructor + destructor
+    explicit Player() : Entity() { bulletVector.clear(); bulletCooldown.restart();}
+    explicit Player(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, int bulletCooldownTime_, bool alive_ = true, float speed_ = 1, int health_ = 1) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), bulletCooldownTime(bulletCooldownTime_) { bulletVector.clear(); bulletCooldown.restart(); sprite.setPosition(x_, y_);}
+    //~Player() { std::cout << "Player destructor\n";}
+    std::shared_ptr<Entity> clone() const override {
+        return std::make_shared<Player>(*this);
+    }
+//    Player() : position(0, 0) { bulletVector.clear(); bulletCooldown.restart();}
+//    Player(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, int bulletCooldownTime_) : position(x_, y_), sprite(texture_), bulletTexture(bulletTexture_), bulletCooldownTime(bulletCooldownTime_) { bulletVector.clear(); bulletCooldown.restart(); sprite.setPosition(x_, y_);}
+//    ~Player() { std::cout << "Player destructor\n";}
+
+
+    /// getters + setters
+    Point getPosition() const { return position; }
+    std::vector<Bullet>& getBulletVector() { return bulletVector; }
+    sf::Sprite& getSprite() { return sprite; }
+
+    void setPosition(const Point& position_) { this->position = position_; }
+    //void setBulletVector(std::vector<Bullet> bulletVector) { this->bulletVector = bulletVector; }
+
+    /// cc
+    //Player(const Player& other) : position{other.position}, bulletVector{other.bulletVector}, bulletCooldownTime{other.bulletCooldownTime} {}
+    //Player(const Player& other) = default;
+
+    /// operator=
+    /// warning pentru operator= de la clion
+    //Player& operator=(const Player& other) = default;
+
+    void move(int direction_) override {
+        if (direction_ == 0 && position.getX() > 0)
+            position.setX(position.getX() - 2);
+        else if (direction_ == 1 && position.getX() < SCREEN_WIDTH-ENTITY_SIZE-2)
+            position.setX(position.getX() + 2);
+        sprite.setPosition(position.getX(), position.getY());
+    }
+
+    void move() override {}
+
+    void shoot() override {
+        if (bulletCooldown.getElapsedTime().asMilliseconds() > bulletCooldownTime){
+            bulletCooldown.restart();
+            bulletVector.emplace_back(position.getX(), position.getY(), bulletTexture);
+        }
+    }
+
+};
+
+class Enemy : public Entity {
+    float direction = 1.0f;
+
+    void print(std::ostream& os) const override {
+        os << "Enemy: " << direction;
+    }
+
+    void moveSingleBullet(Bullet& bullet) const override {
+        bullet.move(1);
+    }
+
+public:
+    /// constructor + destructor
+    //Enemy() : position(0, 0), direction(1), alive(true), speed(0) { bulletVector.clear(); }
+    explicit Enemy() : Entity() { bulletVector.clear(); sprite.setPosition(0, 0);}
+    explicit Enemy(float x_, float y_, float direction_, sf::Texture& texture_, sf::Texture& bulletTexture_, bool alive_ = true, float speed_ = 1, int health_ = 1) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), direction(direction_) { bulletVector.clear(); sprite.setPosition(x_, y_);}
+    //~Enemy() { std::cout << "Enemy destructor\n";}
+    std::shared_ptr<Entity> clone() const override {
+        return std::make_shared<Enemy>(*this);
+    }
+
+    /// getters + setters
+    Point getPosition() const { return position; }
+    //float getDirection() const { return direction; }
+    std::vector<Bullet>& getBulletVector() { return bulletVector; }
+    sf::Sprite& getSprite() { return sprite; }
+    bool getAlive() const { return alive; }
+    //float getSpeed() const { return speed; }
+
+    void setPosition(const Point& position_) { this->position = position_; }
+    //void setBulletVector(std::vector<Bullet> bulletVector) { this->bulletVector = bulletVector; }
+    //void setDirection(float direction_) { this->direction = direction_; }
+    void setAlive(bool alive_) { this->alive = alive_; }
+    //void setSpeed(float speed_) { this->speed = speed_; }
+
+    /// cc
+    //Enemy(const Enemy& other) : position{other.position}, direction{other.direction}, texture{other.texture}, bulletVector{other.bulletVector}, bulletTexture{other.bulletTexture}, alive{other.alive}, speed{other.speed} {sprite.setTexture(texture); sprite.setPosition(position.getX(), position.getY());}
+
+    /// operator=
+//    Enemy& operator=(const Enemy& other) {
+//        position = other.position;
+//        bulletVector = other.bulletVector;
+//        direction = other.direction;
+//        alive = other.alive;
+//        speed = other.speed;
+//
+//        texture = other.texture;
+//        sprite.setTexture(other.texture);
+//        sprite.setPosition(other.position.getX(), other.position.getY());
+//        bulletTexture = other.bulletTexture;
+//        return *this;
+//    }
+
+    /// operator<<
+//    friend std::ostream& operator<<(std::ostream& os, const Enemy& enemy) {
+//        os << "x: " << enemy.position.getX() << " y: " << enemy.position.getY() << " direction: " << enemy.direction << "\n";
+//        return os;
+//    }
+
+    void move() override {
+        if (position.getX() > SCREEN_WIDTH-ENTITY_SIZE || position.getX() < 0) {
+            direction *= -1;
+            position.setY(position.getY() + 1.2f * ENTITY_SIZE);
+        }
+        position.setX(position.getX() + direction * 2.0f);
+        sprite.setPosition(position.getX(), position.getY());
+    }
+
+    void move(int direction_) override {
+        std::cout << "Wrong function for Enemy move with " << direction_ << "!\n";
+        move();
+    }
+
+    void shoot() override {
+        bulletVector.emplace_back(position.getX() + BULLET_SIZE, position.getY() + 2*BULLET_SIZE, bulletTexture);
+    }
+};
+
+class Boss : public Entity {
+    float direction = 1.0f;
+
+    sf::Clock regenerationClock;
+    int regenerationTime = 10;
+
+    void print(std::ostream& os) const override {
+        os << "Boss: " << regenerationTime;
+    }
+
+    void moveSingleBullet(Bullet& bullet) const override {
+        bullet.move(1);
+    }
+
+public:
+    /// constructor + destructor
+    //Boss() : position(0, 0), direction(1), alive(true), speed(0), health(3) { bulletVector.clear(); regenerationClock.restart(); }
+    explicit Boss(float x_, float y_, float direction_, sf::Texture& texture_, sf::Texture& bulletTexture_, bool alive_, float speed_, int health_, int regenerationTime_) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), direction(direction_), regenerationTime(regenerationTime_) { bulletVector.clear(); sprite.setPosition(x_, y_);}
+    //~Boss() { std::cout << "Boss destructor\n";}
+    std::shared_ptr<Entity> clone() const override {
+        return std::make_shared<Boss>(*this);
+    }
+
+    /// getters + setters
+    Point getPosition() const { return position; }
+    //float getDirection() const { return direction; }
+    std::vector<Bullet>& getBulletVector() { return bulletVector; }
+    sf::Sprite& getSprite() { return sprite; }
+    bool getAlive() const { return alive; }
+    //float getSpeed() const { return speed; }
+    int getHealth() const { return health; }
+    //int getRegenerationTime() const { return regenerationTime; }
+
+    void setPosition(const Point& position_) { this->position = position_; }
+    //void setBulletVector(std::vector<Bullet> bulletVector) { this->bulletVector = bulletVector; }
+    //void setDirection(float direction_) { this->direction = direction_; }
+    void setAlive(bool alive_) { this->alive = alive_; }
+    //void setSpeed(float speed_) { this->speed = speed_; }
+    void setHealth(int health_) { this->health = health_; }
+    //void setRegenerationTime(int regenerationTime_) { this->regenerationTime = regenerationTime_; }
+
+    /// cc
+    //Boss(const Boss& other) : position{other.position}, direction{other.direction}, texture{other.texture}, bulletVector{other.bulletVector}, bulletTexture{other.bulletTexture}, alive{other.alive}, speed{other.speed}, health(other.health), regenerationTime(other.regenerationTime) {sprite.setTexture(texture); sprite.setPosition(position.getX(), position.getY());}
+
+    /// operator=
+//    Boss& operator=(const Boss& other) {
+//        position = other.position;
+//        bulletVector = other.bulletVector;
+//        direction = other.direction;
+//        alive = other.alive;
+//        speed = other.speed;
+//        health = other.health;
+//        regenerationTime = other.regenerationTime;
+//
+//        texture = other.texture;
+//        sprite.setTexture(other.texture);
+//        sprite.setPosition(other.position.getX(), other.position.getY());
+//        bulletTexture = other.bulletTexture;
+//        return *this;
+//    }
+
+    /// operator<<
+//    friend std::ostream& operator<<(std::ostream& os, const Boss& boss) {
+//        os << "x: " << boss.position.getX() << " y: " << boss.position.getY() << " direction: " << boss.direction << "\n";
+//        return os;
+//    }
+
+    void move() override {
+        if (position.getX() > SCREEN_WIDTH-ENTITY_SIZE || position.getX() < 0) {
+            direction *= -1;
+            position.setY(position.getY() + 1.2f * ENTITY_SIZE);
+        }
+        position.setX(position.getX() + direction * 2.0f);
+        sprite.setPosition(position.getX(), position.getY());
+    }
+
+    void move(int direction_) override {
+        std::cout << "Wrong function for Boss move with " << direction_ << "!\n";
+        move();
+    }
+
+    void shoot() override {
+        bulletVector.emplace_back(position.getX() - BULLET_SIZE, position.getY() + 2*BULLET_SIZE, bulletTexture);
+        bulletVector.emplace_back(position.getX() + BULLET_SIZE, position.getY() + 2*BULLET_SIZE, bulletTexture);
+        bulletVector.emplace_back(position.getX() + 3*BULLET_SIZE, position.getY() + 2*BULLET_SIZE, bulletTexture);
+    }
+
+    void regenerate() {
+        if (regenerationClock.getElapsedTime().asSeconds() > float(regenerationTime)) {
+            health = std::min(3, health+1);
+            regenerationClock.restart();
+        }
+    }
+};
+
+
+/*
 class Player {
     Point position;
     std::vector<Bullet> bulletVector;
@@ -131,11 +402,6 @@ public:
     Player(const Player& other) = default;
 
     /// operator=
-    /*Player& operator=(const Player& other) {
-        position = other.position;
-        bulletVector = other.bulletVector;
-        return *this;
-    }*/
     /// warning pentru operator= de la clion
     Player& operator=(const Player& other) = default;
 
@@ -211,6 +477,10 @@ public:
     /// cc
     Enemy(const Enemy& other) : position{other.position}, direction{other.direction}, texture{other.texture}, bulletVector{other.bulletVector}, bulletTexture{other.bulletTexture}, alive{other.alive}, speed{other.speed} {sprite.setTexture(texture); sprite.setPosition(position.getX(), position.getY());}
 
+    //Enemy(const Enemy& other) = default;
+    //Enemy& operator=(const Enemy& other) = default;
+    //merge
+
     /// operator=
     Enemy& operator=(const Enemy& other) {
         position = other.position;
@@ -257,16 +527,6 @@ public:
     }
 
     bool intersectsBullet(const Bullet& bullet) {
-        /*
-         position.getX() == sprite.getGlobalBounds().left
-         position.getY() == sprite.getGlobalBounds().top
-         sprite.getGlobalBounds().height = 36
-         sprite.getGlobalBounds().width = 36
-         bullet.getSprite().getGlobalBounds().height = 16
-         bullet.getSprite().getGlobalBounds().width = 16
-         bullet.getSprite().getGlobalBounds().left == bullet.getPosition().getX()
-         bullet.getSprite().getGlobalBounds().top == bullet.getPosition().getY()
-         */
         //return sprite.getGlobalBounds().intersects( bullet.getSprite().getGlobalBounds() );
 
         return (position.getX() < bullet.getPosition().getX() + BULLET_SIZE) && (position.getX() + ENTITY_SIZE > bullet.getPosition().getX())
@@ -274,8 +534,8 @@ public:
     }
 
     bool intersectsPlayer(const Player& player) {
-        return (position.getX() < player.getPosition().getX() + BULLET_SIZE) && (position.getX() + ENTITY_SIZE > player.getPosition().getX())
-               && (position.getY() < player.getPosition().getY() + BULLET_SIZE) && (position.getY() + ENTITY_SIZE > player.getPosition().getY());
+        return (position.getX() < player.getPosition().getX() + ENTITY_SIZE) && (position.getX() + ENTITY_SIZE > player.getPosition().getX())
+               && (position.getY() < player.getPosition().getY() + ENTITY_SIZE) && (position.getY() + ENTITY_SIZE > player.getPosition().getY());
     }
 };
 
@@ -375,8 +635,8 @@ public:
     }
 
     bool intersectsPlayer(const Player& player) {
-        return (position.getX() < player.getPosition().getX() + BULLET_SIZE) && (position.getX() + ENTITY_SIZE > player.getPosition().getX())
-               && (position.getY() < player.getPosition().getY() + BULLET_SIZE) && (position.getY() + ENTITY_SIZE > player.getPosition().getY());
+        return (position.getX() < player.getPosition().getX() + ENTITY_SIZE) && (position.getX() + ENTITY_SIZE > player.getPosition().getX())
+               && (position.getY() < player.getPosition().getY() + ENTITY_SIZE) && (position.getY() + ENTITY_SIZE > player.getPosition().getY());
     }
 
     void regenerate() {
@@ -385,7 +645,7 @@ public:
             regenerationClock.restart();
         }
     }
-};
+};*/
 
 
 /*class Game {
@@ -476,13 +736,13 @@ int main() {
     //enemy.setPosition(Point((float)dist(rng), 150)); /// facem random si poz
     std::vector<Enemy> enemyVector;
     enemyVector.clear();
-    for (int i = 0; i < 1; i++) {
-        Enemy enemy((float)((i * 1.0 * SCREEN_WIDTH) / 5.0 + (dist(rng) % (SCREEN_WIDTH / 5))*1.0), 90, 1, enemyTexture, bulletTexture, true, 1.0f);
+    for (int i = 0; i < 2; i++) {
+        Enemy enemy((float)((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3))*1.0), 90, 1, enemyTexture, bulletTexture, true, 1.0f);
         enemyVector.emplace_back(enemy);
     }
 
-    for (int i = 0; i < 1; i++) {
-        Enemy enemy((float)((i * 1.0 * SCREEN_WIDTH) / 5.0 + (dist(rng) % (SCREEN_WIDTH / 5))*1.0), 200, 1, enemyTexture, bulletTexture, true, 1);
+    for (int i = 0; i < 2; i++) {
+        Enemy enemy((float)((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3))*1.0), 200, 1, enemyTexture, bulletTexture, true, 1);
         //std::cout << enemy.getPosition().getX() << " " << enemy.getPosition().getY() << "\n";
         enemyVector.emplace_back(enemy);
     }
@@ -674,28 +934,30 @@ int main() {
                 boss.shoot();
             boss.moveBullets();
 
-            boss.regenerate();
+            if (boss.getHealth() < 3)
+                boss.regenerate();
         }
 
-        for (auto itBullet=playerBullet.begin(); itBullet != playerBullet.end(); itBullet++) {
-            for (auto& enemy : enemyVector) {
-                if (!enemy.getAlive())
-                    continue;
+        for (auto& enemy : enemyVector) {
+            if (!enemy.getAlive())
+                continue;
+            for (auto itBullet=playerBullet.begin(); itBullet != playerBullet.end(); ) {
                 if (enemy.intersectsBullet(*itBullet)) {
-                    playerBullet.erase(itBullet);
+                    itBullet = playerBullet.erase(itBullet);
                     enemy.setAlive(false);
                     score += ENEMY_POINTS;
-                    //std::cout << enemy << "\n";
                 }
+                else
+                    itBullet++;
             }
         }
 
         if (boss.getAlive())
-            for (auto itBullet=playerBullet.begin(); itBullet != playerBullet.end(); itBullet++)
+            for (auto itBullet=playerBullet.begin(); itBullet != playerBullet.end(); ) {
                 if (boss.intersectsBullet(*itBullet)) {
-                    playerBullet.erase(itBullet);
+                    itBullet = playerBullet.erase(itBullet);
                     boss.setHealth(boss.getHealth() - 1);
-                    score += BOSS_POINTS/3;
+                    score += BOSS_POINTS / 3;
                     if (boss.getHealth() <= 0) {
                         boss.setAlive(false);
                         score += BOSS_POINTS;
@@ -703,13 +965,11 @@ int main() {
                         endGame = 1;
                         transition = false;
 
-
-                        //std::cout << "You Win!\n";
-                        //window.close();
-                        //return 0;
                     }
+                } else {
+                    itBullet++;
                 }
-
+            }
         //enemyVector.erase(std::remove_if(enemyVector.begin(), enemyVector.end(), [](const Enemy& enemy) { return !enemy.getAlive(); }), enemyVector.end());
 
         int areEnemies = 0;
@@ -718,9 +978,6 @@ int main() {
                 areEnemies = 1;
 
         if (!areEnemies && !boss.getAlive()){
-            //std::cout << "Good job!\n";
-            //std::cout << "Let's see if you can beat the final boss!\n";
-
             transition = true;
 
             boss.setAlive(true);
@@ -729,11 +986,7 @@ int main() {
         for (auto& enemy : enemyVector) {
             if (!enemy.getAlive())
                 continue;
-            if (enemy.intersectsPlayer(player)) {
-                //std::cout << "Game Over:(\n";
-                //window.close();
-                //return 0;
-
+            if (enemy.intersectsEntity(player)) {
                 endGame = -1;
                 transition = false;
                 break;
@@ -741,11 +994,6 @@ int main() {
             std::vector<Bullet>& enemyBullet = enemy.getBulletVector();
             for (auto& bullet : enemyBullet) {
                 if (player.intersectsBullet(bullet)) {
-                    //enemyBullet.pop_back();
-                    //std::cout << "Game Over:(\n";
-                    //window.close();
-                    //return 0;
-
                     endGame = -1;
                     transition = false;
                     break;
@@ -754,21 +1002,12 @@ int main() {
         }
 
         if (boss.getAlive()) {
-            if (boss.intersectsPlayer(player)) {
-                //std::cout << "Game Over:(\n";
-                //window.close();
-                //return 0;
-
+            if (boss.intersectsEntity(player)) {
                 endGame = -1;
                 transition = false;
             }
             for (auto &bullet: boss.getBulletVector())
                 if (player.intersectsBullet(bullet)) {
-                    //enemyBullet.pop_back();
-                    //std::cout << "Game Over:(\n";
-                    //window.close();
-                    //return 0;
-
                     endGame = -1;
                     transition = false;
                     break;
@@ -821,109 +1060,11 @@ int main() {
 
         while (clock.getElapsedTime().asMilliseconds() < 10) {}
         clock.restart();
-    }
-
-    /*while (window.isOpen()) {
-        sf::Event event{};
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            player.move(0);
-        else
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                player.move(1);
-            else
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-                    player.shoot();
-
-        std::vector<Bullet>& playerBullet = player.getBulletVector();
-        player.moveBullets();
-
-
-        /// de facut pentru mai multi inamici
-
-        for (auto& enemy : enemyVector) {
-            if (enemy.getAlive()) {
-                enemy.move();
-                if (dist(rng) % 200 < 1)
-                    enemy.shoot();
-            }
-            enemy.moveBullets();
-
-        }
-
-        for (auto& bullet : playerBullet) {
-            for (auto& enemy : enemyVector) {
-                if (!enemy.getAlive())
-                    continue;
-                if (enemy.intersects(bullet)) {
-                    playerBullet.pop_back();
-                    enemy.setAlive(false);
-                    //std::cout << enemy << "\n";
-                }
-            }
-        }
-        //enemyVector.erase(std::remove_if(enemyVector.begin(), enemyVector.end(), [](const Enemy& enemy) { return !enemy.getAlive(); }), enemyVector.end());
-
-        int areEnemies = 0;
-        for (auto& enemy : enemyVector) {
-            if (enemy.getAlive()) {
-                areEnemies = 1;
-            }
-        }
-
-        if (!areEnemies){
-            std::cout << enemyVector.begin()->getPosition() << "\n";
-            std::cout << "You Win!\n";
-            window.close();
-            return 0;
-        }
-
-        for (auto& enemy : enemyVector) {
-            std::vector<Bullet>& enemyBullet = enemy.getBulletVector();
-            for (auto& bullet : enemyBullet) {
-                if (player.intersects(bullet)) {
-                    //enemyBullet.pop_back();
-                    std::cout << "Game Over:(\n";
-                    window.close();
-                    return 0;
-                }
-            }
-        }
-
-
-        window.clear(sf::Color::Black);
-
-        //window.draw(sprite);
-        window.draw(player.getSprite());
-
-        for (auto& enemy : enemyVector) {
-            if (!enemy.getAlive())
-                continue;
-            window.draw(enemy.getSprite());
-        }
-        //window.draw(enemy.getSprite());
-        for (const Bullet& bullet : playerBullet)
-            window.draw(bullet.getSprite());
-
-        for (auto& enemy : enemyVector) {
-            std::vector<Bullet>& enemyBullet = enemy.getBulletVector();
-            for (const Bullet& bullet : enemyBullet)
-                window.draw(bullet.getSprite());
-        }
-
-        window.display();
-
-        while (clock.getElapsedTime().asMilliseconds() < 10) {}
-        clock.restart();
         //std::this_thread::sleep_for(std::chrono::microseconds (990));
         //std::this_thread::sleep_for(std::chrono::duration<double, std::milli> (0.9));
         //std::this_thread::sleep_for(std::chrono::milliseconds (10));
         //std::this_thread::sleep_for(std::chrono::microseconds (900));
-    }*/
+    }
 
     return 0;
 }
