@@ -9,6 +9,8 @@
 class Enemy : public Entity {
     float direction = 1.0f;
 
+    static int enemyCount;
+
     void print(std::ostream& os) const override;
 
     void moveSingleBullet(Bullet& bullet) const override;
@@ -28,12 +30,15 @@ public:
     sf::Sprite& getSprite();
     bool getAlive() const;
     //float getSpeed() const { return speed; }
+    static int getEnemyCount();
 
     void setPosition(const Point& position_);
     //void setBulletVector(std::vector<Bullet> bulletVector) { this->bulletVector = bulletVector; }
     //void setDirection(float direction_) { this->direction = direction_; }
     void setAlive(bool alive_);
     //void setSpeed(float speed_) { this->speed = speed_; }
+    //static void upEnemyCount() { enemyCount++; }
+    static void downEnemyCount();
 
     /// cc
     /// operator=

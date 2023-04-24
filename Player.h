@@ -9,6 +9,7 @@
 class Player : public Entity {
     sf::Clock bulletCooldown;
     int bulletCooldownTime = 100;
+    int score = 0;
 
     void print(std::ostream& os) const override;
 
@@ -17,7 +18,7 @@ class Player : public Entity {
 public:
     /// constructor + destructor
     explicit Player();
-    explicit Player(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, int bulletCooldownTime_, bool alive_ = true, float speed_ = 1, int health_ = 1);
+    explicit Player(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, int bulletCooldownTime_, bool alive_ = true, float speed_ = 1, int health_ = 1, int score_ = 0);
     //~Player() { std::cout << "Player destructor\n";}
     [[maybe_unused]] std::shared_ptr<Entity> clone() const override;
 //    Player() : position(0, 0) { bulletVector.clear(); bulletCooldown.restart();}
@@ -29,9 +30,10 @@ public:
     Point getPosition() const;
     std::vector<Bullet>& getBulletVector();
     sf::Sprite& getSprite();
+    int getScore() const;
 
     void setPosition(const Point& position_);
-
+    void setScore(int score_);
     /// cc
     /// operator=
     /// warning pentru operator= de la clion

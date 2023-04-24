@@ -22,27 +22,44 @@
 const int ENEMY_POINTS = 20;
 const int BOSS_POINTS = 90;
 
+/// window ca atribut
+/// texturi ca atribut
 
-/*class Game {
+
+class Game {
     sf::RenderWindow window;
-    Player player;
-    std::vector<Enemy> enemyVector;
-    sf::Clock clock;
+    //sf::Clock clock;
+    std::shared_ptr<Entity> player;
+    std::vector<std::shared_ptr<Entity>> enemyVector;
+    std::shared_ptr<Entity> boss;
 
 public:
     /// constructor + destructor
-    Game() : window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Space Invaders") {
-        sf::Texture playerTexture, bulletTexture;
-        playerTexture.loadFromFile("./player.png");
-        bulletTexture.loadFromFile("./bulletP.png");
-        player(350, 500, playerTexture, bulletTexture, 150);
-        enemyVector.clear();
-        clock.restart();
-    }
-    Game(sf::RenderWindow window_, Player player_, std::vector<Enemy> enemyVector_) : enemyVector(enemyVector_) { window = window_; player = player_; clock.restart(); }
 
-};*/
 
+    /// getters + setters
+
+
+    /// cc
+
+
+    /// operator=
+
+
+    /// operator<<
+
+
+    /// metode
+    /// run
+
+
+
+
+
+
+
+
+};
 
 
 int main() {
@@ -87,20 +104,6 @@ int main() {
 
 
     Player player(350, 500, playerTexture, bulletTexture, 250);
-    Enemy first_enemy(350, 100, 1, enemyTexture, bulletTexture, true, 1);
-
-    /// testarea obiectelor Bullet, Player, Enemy
-    Bullet b1(0, 0, bulletTexture), b2;
-    b2 = b1;
-    std::cout << b1 << b2 << "\n";
-    Player player2, player1(1, 1, playerTexture, bulletTexture, 20);
-    player2 = player1;
-    std::cout << player1 << "\n" << player2 << "\n";
-    Enemy e1;
-    e1 = first_enemy;
-    std::cout << e1 << "\n";
-
-
 
 
     std::random_device rd;
@@ -111,14 +114,13 @@ int main() {
     //enemy.setPosition(Point((float)dist(rng), 150)); /// facem random si poz
     std::vector<Enemy> enemyVector;
     enemyVector.clear();
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 1; i++) {
         Enemy enemy((float)((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3))*1.0), 90, 1, enemyTexture, bulletTexture, true, 1.0f);
         enemyVector.emplace_back(enemy);
     }
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 1; i++) {
         Enemy enemy((float)((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3))*1.0), 200, 1, enemyTexture, bulletTexture, true, 1);
-        //std::cout << enemy.getPosition().getX() << " " << enemy.getPosition().getY() << "\n";
         enemyVector.emplace_back(enemy);
     }
 
@@ -149,11 +151,6 @@ int main() {
     textScore.setFillColor(sf::Color::White);
     textScore.setPosition(0, 50);
 
-//    sf::Text Score("0", font, 30);
-//    Score.setFillColor(sf::Color::White);
-//    Score.setPosition(150, 50);
-
-    int score = 0; /// eventual variabila in Player
     int endGame = 0;
     bool transition = false;
 
@@ -220,7 +217,7 @@ int main() {
                 textWin.setFillColor(sf::Color::White);
                 textWin.setPosition((float)SCREEN_WIDTH / 2 - 200, (float)SCREEN_HEIGHT / 2 - 100);
 
-                sf::Text textWinScore("You have " + std::to_string(score) + " points!", font, 30);
+                sf::Text textWinScore("You have " + std::to_string(player.getScore()) + " points!", font, 30);
                 textWinScore.setFillColor(sf::Color::White);
                 textWinScore.setPosition((float)SCREEN_WIDTH / 2 - 250, (float)SCREEN_HEIGHT / 2 + 100);
 
@@ -241,7 +238,7 @@ int main() {
                 textLose.setFillColor(sf::Color::White);
                 textLose.setPosition((float)SCREEN_WIDTH / 2 - 250, (float)SCREEN_HEIGHT / 2 - 100);
 
-                sf::Text textLoseScore("You have " + std::to_string(score) + " points!", font, 30);
+                sf::Text textLoseScore("You have " + std::to_string(player.getScore()) + " points!", font, 30);
                 textLoseScore.setFillColor(sf::Color::White);
                 textLoseScore.setPosition((float)SCREEN_WIDTH / 2 - 250, (float)SCREEN_HEIGHT / 2 + 100);
 
@@ -289,8 +286,6 @@ int main() {
         player.moveBullets();
 
 
-        /// de facut pentru mai multi inamici
-
         if (!boss.getAlive())
             for (auto& enemy : enemyVector) {
                 if (enemy.getAlive()) {
@@ -320,7 +315,9 @@ int main() {
                 if (enemy.intersectsBullet(*itBullet)) {
                     itBullet = playerBullet.erase(itBullet);
                     enemy.setAlive(false);
-                    score += ENEMY_POINTS;
+                    Enemy::downEnemyCount();
+                    player.setScore(player.getScore() + ENEMY_POINTS);
+                    //score += ENEMY_POINTS;
                 }
                 else
                     itBullet++;
@@ -332,27 +329,23 @@ int main() {
                 if (boss.intersectsBullet(*itBullet)) {
                     itBullet = playerBullet.erase(itBullet);
                     boss.setHealth(boss.getHealth() - 1);
-                    score += BOSS_POINTS / 3;
+                    player.setScore(player.getScore() + BOSS_POINTS / 3);
+                    //score += BOSS_POINTS / 3;
                     if (boss.getHealth() <= 0) {
                         boss.setAlive(false);
-                        score += BOSS_POINTS;
+                        player.setScore(player.getScore() + BOSS_POINTS);
+                        //score += BOSS_POINTS;
 
                         endGame = 1;
                         transition = false;
 
                     }
-                } else {
+                } else
                     itBullet++;
-                }
             }
         //enemyVector.erase(std::remove_if(enemyVector.begin(), enemyVector.end(), [](const Enemy& enemy) { return !enemy.getAlive(); }), enemyVector.end());
 
-        int areEnemies = 0;
-        for (auto& enemy : enemyVector)
-            if (enemy.getAlive())
-                areEnemies = 1;
-
-        if (!areEnemies && !boss.getAlive()){
+        if (!Enemy::getEnemyCount() && !boss.getAlive()){
             transition = true;
 
             boss.setAlive(true);
@@ -398,7 +391,7 @@ int main() {
         window.draw(textHeartPlayer);
         window.draw(heartP);
         window.draw(textScore);
-        sf::Text Score(std::to_string(score), font, 30);
+        sf::Text Score(std::to_string(player.getScore()), font, 30);
         Score.setFillColor(sf::Color::White);
         Score.setPosition(150, 50);
         window.draw(Score);

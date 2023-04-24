@@ -1,7 +1,7 @@
 #include "Player.h"
 
 void Player::print(std::ostream &os) const {
-    os << "Player:" << bulletCooldownTime;
+    os << "Player:" << score;
 }
 
 void Player::moveSingleBullet(Bullet &bullet) const {
@@ -11,7 +11,7 @@ void Player::moveSingleBullet(Bullet &bullet) const {
 Player::Player() : Entity() { bulletVector.clear(); bulletCooldown.restart();}
 
 Player::Player(float x_, float y_, sf::Texture &texture_, sf::Texture &bulletTexture_, int bulletCooldownTime_,
-               bool alive_, float speed_, int health_) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), bulletCooldownTime(bulletCooldownTime_) { bulletVector.clear(); bulletCooldown.restart(); sprite.setPosition(x_, y_);}
+               bool alive_, float speed_, int health_, int score_) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), bulletCooldownTime(bulletCooldownTime_), score(score_) { bulletVector.clear(); bulletCooldown.restart(); sprite.setPosition(x_, y_);}
 
 [[maybe_unused]] std::shared_ptr<Entity> Player::clone() const {
     return std::make_shared<Player>(*this);
@@ -23,7 +23,11 @@ std::vector<Bullet> &Player::getBulletVector() { return bulletVector; }
 
 sf::Sprite &Player::getSprite() { return sprite; }
 
+int Player::getScore() const { return score; }
+
 void Player::setPosition(const Point &position_) { this->position = position_; }
+
+void Player::setScore(int score_) { this->score = score_; }
 
 void Player::move(int direction_) {
     if (direction_ == 0 && position.getX() > 0)
