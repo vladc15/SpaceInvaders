@@ -42,6 +42,17 @@ public:
 
     [[maybe_unused]] virtual std::shared_ptr<Entity> clone() const = 0;
     /// getters + setters
+
+    Point getPosition() const;
+    std::vector<Bullet>& getBulletVector();
+    sf::Sprite& getSprite();
+    bool getAlive() const;
+    int getHealth() const;
+
+    void setPosition(const Point& position_);
+    void setAlive(bool alive_);
+    void setHealth(int health_);
+
     /// cc
     /// operator=
     /// operator<<

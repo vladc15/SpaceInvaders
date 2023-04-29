@@ -15,22 +15,6 @@ Boss::Boss(float x_, float y_, float direction_, sf::Texture &texture_, sf::Text
     return std::make_shared<Boss>(*this);
 }
 
-Point Boss::getPosition() const { return position; }
-
-std::vector<Bullet> &Boss::getBulletVector() { return bulletVector; }
-
-sf::Sprite &Boss::getSprite() { return sprite; }
-
-bool Boss::getAlive() const { return alive; }
-
-int Boss::getHealth() const { return health; }
-
-void Boss::setPosition(const Point &position_) { this->position = position_; }
-
-void Boss::setAlive(bool alive_) { this->alive = alive_; }
-
-void Boss::setHealth(int health_) { this->health = health_; }
-
 void Boss::move() {
     if (position.getX() > SCREEN_WIDTH-ENTITY_SIZE || position.getX() < 0) {
         direction *= -1;
@@ -57,3 +41,20 @@ void Boss::regenerate() {
         regenerationClock.restart();
     }
 }
+
+/*Boss::~Boss() {
+    std::cout << "Boss destructor\n";
+}
+
+Boss::Boss(const Boss &other) : Entity(other), direction(other.direction), regenerationClock(other.regenerationClock), regenerationTime(other.regenerationTime) {
+    std::cout << "Boss copy constructor\n";
+}
+
+Boss &Boss::operator=(const Boss &other) {
+    Entity::operator=(other);
+    direction = other.direction;
+    regenerationClock = other.regenerationClock;
+    regenerationTime = other.regenerationTime;
+    std::cout << "Boss op=\n";
+    return *this;
+}*/

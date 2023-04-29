@@ -17,15 +17,7 @@ Player::Player(float x_, float y_, sf::Texture &texture_, sf::Texture &bulletTex
     return std::make_shared<Player>(*this);
 }
 
-Point Player::getPosition() const { return position; }
-
-std::vector<Bullet> &Player::getBulletVector() { return bulletVector; }
-
-sf::Sprite &Player::getSprite() { return sprite; }
-
 int Player::getScore() const { return score; }
-
-void Player::setPosition(const Point &position_) { this->position = position_; }
 
 void Player::setScore(int score_) { this->score = score_; }
 
@@ -45,3 +37,20 @@ void Player::shoot() {
         bulletVector.emplace_back(position.getX(), position.getY(), bulletTexture);
     }
 }
+
+/*Player::~Player() {
+    std::cout << "Player destructor\n";
+}
+
+Player::Player(const Player &other) : Entity(other), bulletCooldown(other.bulletCooldown), bulletCooldownTime(other.bulletCooldownTime), score(other.score) {
+    std::cout << "Player copy constructor\n";
+}
+
+Player &Player::operator=(const Player &other) {
+    Entity::operator=(other);
+    bulletCooldown = other.bulletCooldown;
+    bulletCooldownTime = other.bulletCooldownTime;
+    score = other.score;
+    std::cout << "Player op=\n";
+    return *this;
+}*/

@@ -24,18 +24,17 @@ public:
 //    Player() : position(0, 0) { bulletVector.clear(); bulletCooldown.restart();}
 //    Player(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, int bulletCooldownTime_) : position(x_, y_), sprite(texture_), bulletTexture(bulletTexture_), bulletCooldownTime(bulletCooldownTime_) { bulletVector.clear(); bulletCooldown.restart(); sprite.setPosition(x_, y_);}
 //    ~Player() { std::cout << "Player destructor\n";}
+    //~Player() override;
 
 
     /// getters + setters
-    Point getPosition() const;
-    std::vector<Bullet>& getBulletVector();
-    sf::Sprite& getSprite();
     int getScore() const;
 
-    void setPosition(const Point& position_);
     void setScore(int score_);
     /// cc
+    //Player (const Player& other);
     /// operator=
+    //Player& operator=(const Player& other);
     /// warning pentru operator= de la clion
 
     void move(int direction_) override;

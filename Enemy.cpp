@@ -14,23 +14,11 @@ Enemy::Enemy() : Entity() { bulletVector.clear(); sprite.setPosition(0, 0); enem
 
 Enemy::Enemy(float x_, float y_, float direction_, sf::Texture &texture_, sf::Texture &bulletTexture_, bool alive_,
              float speed_, int health_) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), direction(direction_)
-             { bulletVector.clear(); sprite.setPosition(x_, y_); enemyCount++;}
+             { bulletVector.clear(); sprite.setTexture(texture_); sprite.setPosition(x_, y_); enemyCount++;}
 
 [[maybe_unused]] std::shared_ptr<Entity> Enemy::clone() const {
     return std::make_shared<Enemy>(*this);
 }
-
-Point Enemy::getPosition() const { return position; }
-
-std::vector<Bullet> &Enemy::getBulletVector() { return bulletVector; }
-
-sf::Sprite &Enemy::getSprite() { return sprite; }
-
-bool Enemy::getAlive() const { return alive; }
-
-void Enemy::setPosition(const Point &position_) { this->position = position_; }
-
-void Enemy::setAlive(bool alive_) { this->alive = alive_; }
 
 void Enemy::move() {
     if (position.getX() > SCREEN_WIDTH-ENTITY_SIZE || position.getX() < 0) {
@@ -53,3 +41,23 @@ void Enemy::shoot() {
 int Enemy::getEnemyCount() { return enemyCount; }
 
 void Enemy::downEnemyCount() { enemyCount--; }
+
+/*Enemy::~Enemy() {
+    std::cout << "Enemy destructor\n";
+}
+
+Enemy::Enemy(const Enemy &other) : Entity(other), direction(other.direction) {
+    sprite.setTexture(other.texture);
+    sprite.setPosition(other.position.getX(), other.position.getY());
+    std::cout << "Enemy copy constructor\n";
+}
+
+Enemy &Enemy::operator=(const Enemy &other) {
+    if (this == &other) return *this;
+    Entity::operator=(other);
+    sprite.setTexture(other.texture);
+    sprite.setPosition(other.position.getX(), other.position.getY());
+    direction = other.direction;
+    std::cout << "Enemy op=\n";
+    return *this;
+}*/
