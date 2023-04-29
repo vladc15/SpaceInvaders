@@ -8,10 +8,17 @@ Game::Game(std::shared_ptr<sf::RenderWindow> window_, std::shared_ptr<Entity> pl
     //playerTexture.loadFromFile("./player.png");
     //bulletTexture.loadFromFile("./bulletP.png");
     //enemyTexture.loadFromFile("./enemy.png");
-    backgroundTexture.loadFromFile("./background.jpg");
+
+    //backgroundTexture.loadFromFile("./background.jpg");
+    if (!backgroundTexture.loadFromFile("./background.jpg"))
+        throw textureError("background.jpg not found");
     //bossTexture.loadFromFile("./boss.png");
-    heartPTexture.loadFromFile("./heartP.png");
-    heartBTexture.loadFromFile("./heartB.png");
+    //heartPTexture.loadFromFile("./heartP.png");
+    if (!heartPTexture.loadFromFile("./heartP.png"))
+        throw textureError("heartP.png not found");
+    //heartBTexture.loadFromFile("./heartB.png");
+    if (!heartBTexture.loadFromFile("./heartB.png"))
+        throw textureError("heartB.png not found");
 
     background.setTexture(backgroundTexture);
     background.setPosition(0, 0);
@@ -50,7 +57,9 @@ Game::Game(std::shared_ptr<sf::RenderWindow> window_, std::shared_ptr<Entity> pl
 
     Boss boss(350, 100, 1, bossTexture, bulletTexture, false, 1.0f, 3, 7);*/
 
-    font.loadFromFile("./retro.ttf");
+    //font.loadFromFile("./retro.ttf");
+    if (!font.loadFromFile("./retro.ttf"))
+        throw fontError("retro.ttf not found");
     //textName("SPACE INVADERS", font, 50);
     textName.setString("SPACE INVADERS");
     textName.setFont(font);
@@ -398,6 +407,8 @@ void Game::update() {
         transition = true;
 
         boss->setAlive(true);
+        if (auto* bossPtr = dynamic_cast<Boss*>(boss.get()))
+            bossPtr->restartClock();
     }
 
     for (auto& enemy : enemyVector) {
@@ -453,6 +464,9 @@ void Game::run() {
             continue;
 
         update();
+
+        if (transition)
+            continue;
 
         render();
     }

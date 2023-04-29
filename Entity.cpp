@@ -6,7 +6,11 @@ Entity::Entity() : position(0, 0), alive(true), speed(0), health(0) { bulletVect
 
 Entity::Entity(float x_, float y_, sf::Texture &texture_, sf::Texture &bulletTexture_, bool alive_, float speed_,
                int health_) : position(x_, y_), sprite(texture_), texture(texture_), bulletTexture(bulletTexture_), alive(alive_), speed(speed_), health(health_)
-               { bulletVector.clear(); sprite.setTexture(texture_); sprite.setPosition(x_, y_);}
+               { bulletVector.clear(); sprite.setTexture(texture_); sprite.setPosition(x_, y_);
+                 if (health_ < 0) throw entityError("health must be positive");
+                 if (!(x_ >= 0 && x_ <= SCREEN_WIDTH - ENTITY_SIZE && y_ >= 0 && y_ <= SCREEN_HEIGHT - ENTITY_SIZE))
+                     throw entityError("position must be in the screen limits");
+               }
 
 Point Entity::getPosition() const { return position; }
 std::vector<Bullet> &Entity::getBulletVector() { return bulletVector; }

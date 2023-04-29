@@ -5,6 +5,7 @@
 #include "Point.h"
 #include "Bullet.h"
 #include "Entity.h"
+#include "Exceptions.h"
 
 class Enemy : public Entity {
     float direction = 1.0f;

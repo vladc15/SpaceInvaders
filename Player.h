@@ -5,6 +5,7 @@
 #include "Point.h"
 #include "Bullet.h"
 #include "Entity.h"
+#include "Exceptions.h"
 
 class Player : public Entity {
     sf::Clock bulletCooldown;

@@ -5,6 +5,7 @@
 #include "Point.h"
 #include "Bullet.h"
 #include "Entity.h"
+#include "Exceptions.h"
 
 class Boss : public Entity {
     float direction = 1.0f;
@@ -39,4 +40,6 @@ public:
     void shoot() override;
 
     void regenerate();
+
+    void restartClock();
 };

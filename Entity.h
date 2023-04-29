@@ -4,6 +4,7 @@
 #include <memory>
 #include "Point.h"
 #include "Bullet.h"
+#include "Exceptions.h"
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;

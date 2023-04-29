@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Boss.h"
+#include "Exceptions.h"
 
 const int ENEMY_POINTS = 20;
 const int BOSS_POINTS = 90;
