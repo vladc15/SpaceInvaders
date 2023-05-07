@@ -51,6 +51,7 @@ int main() {
         std::shared_ptr<Entity> boss = Boss{350, 100, 1, bossTexture, bulletTexture, false, 1.0f, 3, 7}.clone();
 
         Game game(window, player, enemyVector, boss);
+        Game::initRandom();
         Game game2(game);
 
         game.run();

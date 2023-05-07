@@ -19,6 +19,10 @@ class Game {
     std::shared_ptr<sf::RenderWindow> window;
     sf::Clock clock;
 
+    static std::random_device rd;
+    static std::mt19937 rng;
+    static std::uniform_int_distribution<int> dist;
+
     std::shared_ptr<Entity> player;
     std::vector<std::shared_ptr<Entity>> enemyVector;
     std::shared_ptr<Entity> boss;
@@ -58,6 +62,8 @@ public:
 
     /// metode
     /// run
+
+    static void initRandom();
 
     void processEvents();
 

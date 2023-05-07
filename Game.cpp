@@ -1,5 +1,13 @@
 #include "Game.h"
 
+std::random_device Game::rd;
+std::mt19937 Game::rng(Game::rd());
+std::uniform_int_distribution<int> Game::dist(0, SCREEN_WIDTH-ENTITY_SIZE);
+
+void Game::initRandom() {
+    rng.seed(rd());
+}
+
 Game::Game(std::shared_ptr<sf::RenderWindow> window_, std::shared_ptr<Entity> player_,
            std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_) : window(std::move(window_)), player(std::move(player_)), enemyVector(std::move(enemyVector_)), boss(std::move(boss_)), displayMenu(true), transition(false), endGame(0) {
     /// sau creez pointerii in main si ii dau ca parametrii ai constructorului
@@ -326,10 +334,10 @@ void Game::displayGameEnd() {
 
 void Game::update() {
 
-    std::random_device rd;
-    std::mt19937 rng(rd());
-    rng.seed(rd());
-    std::uniform_int_distribution<int> dist(0, SCREEN_WIDTH-ENTITY_SIZE);
+//    std::random_device rd;
+//    std::mt19937 rng(rd());
+//    rng.seed(rd());
+//    std::uniform_int_distribution<int> dist(0, SCREEN_WIDTH-ENTITY_SIZE);
 
     std::vector<Bullet>& playerBullet = player->getBulletVector();
     player->moveBullets();
