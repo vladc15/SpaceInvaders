@@ -23,7 +23,7 @@ class Game {
     static std::mt19937 rng;
     static std::uniform_int_distribution<int> dist;
 
-    std::shared_ptr<Entity> player;
+    Player player;
     std::vector<std::shared_ptr<Entity>> enemyVector;
     std::shared_ptr<Entity> boss;
 
@@ -43,7 +43,7 @@ class Game {
 
 public:
     /// constructor + destructor
-    Game(std::shared_ptr<sf::RenderWindow> window_, std::shared_ptr<Entity> player_,  std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_);
+    Game(std::shared_ptr<sf::RenderWindow> window_, Player player_,  std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_);
     ~Game();
 
 

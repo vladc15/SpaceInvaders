@@ -8,7 +8,7 @@ void Game::initRandom() {
     rng.seed(rd());
 }
 
-Game::Game(std::shared_ptr<sf::RenderWindow> window_, std::shared_ptr<Entity> player_,
+Game::Game(std::shared_ptr<sf::RenderWindow> window_, Player player_,
            std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_) : window(std::move(window_)), player(std::move(player_)), enemyVector(std::move(enemyVector_)), boss(std::move(boss_)), displayMenu(true), transition(false), endGame(0) {
     /// sau creez pointerii in main si ii dau ca parametrii ai constructorului
     //window = std::make_shared<sf::RenderWindow>(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Space Invaders");
@@ -112,7 +112,7 @@ Game::~Game() {
     window->close();
 }
 
-Game::Game(const Game &other) : window(other.window), clock(other.clock), player(other.player->clone()), boss(other.boss->clone()),
+Game::Game(const Game &other) : window(other.window), clock(other.clock), player(other.player), boss(other.boss->clone()),
                                 backgroundTexture(other.backgroundTexture), heartPTexture(other.heartPTexture),
                                 heartBTexture(other.heartBTexture), background(other.background), heartP(other.heartP), heartBVector(other.heartBVector),
                                 textHeartPlayer(other.textHeartPlayer), textScore(other.textScore), textHeartBoss(other.textHeartBoss), textName(other.textName),
@@ -185,11 +185,11 @@ void Game::processEvents() {
     }
     else {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            player->move(0);
+            player.move(0);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            player->move(1);
+            player.move(1);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-            player->shoot();
+            player.shoot();
     }
 
 }
@@ -201,16 +201,20 @@ void Game::render() {
     window->draw(background);
 
     //window.draw(sprite);
-    window->draw(player->getSprite());
+    window->draw(player.getSprite());
     window->draw(textHeartPlayer);
     window->draw(heartP);
     window->draw(textScore);
-    if (auto* playerPtr = dynamic_cast<Player*>(player.get())) {
-        sf::Text Score(std::to_string(playerPtr->getScore()), font, 30);
-        Score.setFillColor(sf::Color::White);
-        Score.setPosition(150, 50);
-        window->draw(Score);
-    }
+//    if (auto* playerPtr = dynamic_cast<Player*>(player.get())) {
+//        sf::Text Score(std::to_string(playerPtr->getScore()), font, 30);
+//        Score.setFillColor(sf::Color::White);
+//        Score.setPosition(150, 50);
+//        window->draw(Score);
+//    }
+    sf::Text Score(std::to_string(player.getScore()), font, 30);
+    Score.setFillColor(sf::Color::White);
+    Score.setPosition(150, 50);
+    window->draw(Score);
 
 
     if (boss->getAlive()) {
@@ -226,7 +230,7 @@ void Game::render() {
         window->draw(enemy->getSprite());
     }
     //window.draw(enemy.getSprite());
-    for (const Bullet& bullet : player->getBulletVector())
+    for (const Bullet& bullet : player.getBulletVector())
         window->draw(bullet.getSprite());
 
     if (boss->getAlive())
@@ -286,7 +290,7 @@ void Game::displayGameTransition() {
 
     window->display();
 
-    std::vector<Bullet>& playerBullet1 = player->getBulletVector();
+    std::vector<Bullet>& playerBullet1 = player.getBulletVector();
     playerBullet1.clear();
 
     while (clock.getElapsedTime().asMilliseconds() < 10) {}
@@ -317,13 +321,18 @@ void Game::displayGameEnd() {
         window->draw(textLose);
     }
 
-    if (auto* playerPtr = dynamic_cast<Player*>(player.get())) {
-        sf::Text textFinalScore("You have " + std::to_string(playerPtr->getScore()) + " points!", font, 30);
-        textFinalScore.setFillColor(sf::Color::White);
-        textFinalScore.setPosition((float)SCREEN_WIDTH / 2 - 250, (float)SCREEN_HEIGHT / 2 + 100);
+//    if (auto* playerPtr = dynamic_cast<Player*>(player.get())) {
+//        sf::Text textFinalScore("You have " + std::to_string(playerPtr->getScore()) + " points!", font, 30);
+//        textFinalScore.setFillColor(sf::Color::White);
+//        textFinalScore.setPosition((float)SCREEN_WIDTH / 2 - 250, (float)SCREEN_HEIGHT / 2 + 100);
+//
+//        window->draw(textFinalScore);
+//    }
+    sf::Text textFinalScore("You have " + std::to_string(player.getScore()) + " points!", font, 30);
+    textFinalScore.setFillColor(sf::Color::White);
+    textFinalScore.setPosition((float)SCREEN_WIDTH / 2 - 250, (float)SCREEN_HEIGHT / 2 + 100);
 
-        window->draw(textFinalScore);
-    }
+    window->draw(textFinalScore);
 
     window->display();
 
@@ -339,8 +348,8 @@ void Game::update() {
 //    rng.seed(rd());
 //    std::uniform_int_distribution<int> dist(0, SCREEN_WIDTH-ENTITY_SIZE);
 
-    std::vector<Bullet>& playerBullet = player->getBulletVector();
-    player->moveBullets();
+    std::vector<Bullet>& playerBullet = player.getBulletVector();
+    player.moveBullets();
 
 
     if (!boss->getAlive())
@@ -376,9 +385,9 @@ void Game::update() {
                 itBullet = playerBullet.erase(itBullet);
                 enemy->setAlive(false);
                 Enemy::downEnemyCount();
-                if (auto* playerPtr = dynamic_cast<Player*>(player.get()))
-                    playerPtr->setScore(playerPtr->getScore() + ENEMY_POINTS);
-                //player.setScore(player.getScore() + ENEMY_POINTS);
+                //if (auto* playerPtr = dynamic_cast<Player*>(player.get()))
+                //    playerPtr->setScore(playerPtr->getScore() + ENEMY_POINTS);
+                player.setScore(player.getScore() + ENEMY_POINTS);
                 //score += ENEMY_POINTS;
             }
             else
@@ -391,15 +400,15 @@ void Game::update() {
             if (boss->intersectsBullet(*itBullet)) {
                 itBullet = playerBullet.erase(itBullet);
                 boss->setHealth(boss->getHealth() - 1);
-                if (auto* playerPtr = dynamic_cast<Player*>(player.get()))
-                    playerPtr->setScore(playerPtr->getScore() + BOSS_POINTS / 3);
-                //player.setScore(player.getScore() + BOSS_POINTS / 3);
+                //if (auto* playerPtr = dynamic_cast<Player*>(player.get()))
+                //    playerPtr->setScore(playerPtr->getScore() + BOSS_POINTS / 3);
+                player.setScore(player.getScore() + BOSS_POINTS / 3);
                 //score += BOSS_POINTS / 3;
                 if (boss->getHealth() <= 0) {
                     boss->setAlive(false);
-                    if (auto* playerPtr = dynamic_cast<Player*>(player.get()))
-                        playerPtr->setScore(playerPtr->getScore() + BOSS_POINTS);
-                    //player.setScore(player.getScore() + BOSS_POINTS);
+                    //if (auto* playerPtr = dynamic_cast<Player*>(player.get()))
+                    //    playerPtr->setScore(playerPtr->getScore() + BOSS_POINTS);
+                    player.setScore(player.getScore() + BOSS_POINTS);
                     //score += BOSS_POINTS;
 
                     endGame = 1;
@@ -422,14 +431,14 @@ void Game::update() {
     for (auto& enemy : enemyVector) {
         if (!enemy->getAlive())
             continue;
-        if (enemy->intersectsEntity(*player)) {
+        if (enemy->intersectsEntity(player)) {
             endGame = -1;
             transition = false;
             break;
         }
         std::vector<Bullet>& enemyBullet = enemy->getBulletVector();
         for (auto& bullet : enemyBullet) {
-            if (player->intersectsBullet(bullet)) {
+            if (player.intersectsBullet(bullet)) {
                 endGame = -1;
                 transition = false;
                 break;
@@ -438,12 +447,12 @@ void Game::update() {
     }
 
     if (boss->getAlive()) {
-        if (boss->intersectsEntity(*player)) {
+        if (boss->intersectsEntity(player)) {
             endGame = -1;
             transition = false;
         }
         for (auto &bullet: boss->getBulletVector())
-            if (player->intersectsBullet(bullet)) {
+            if (player.intersectsBullet(bullet)) {
                 endGame = -1;
                 transition = false;
                 break;

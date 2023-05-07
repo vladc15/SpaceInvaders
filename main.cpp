@@ -47,7 +47,7 @@ int main() {
                     Enemy{(float) ((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3)) * 1.0), 200, 1,
                           enemyTexture, bulletTexture, true, 1}.clone());
 
-        std::shared_ptr<Entity> player = Player{350, 500, playerTexture, bulletTexture, 250}.clone();
+        Player player(350, 500, playerTexture, bulletTexture, 250);
         std::shared_ptr<Entity> boss = Boss{350, 100, 1, bossTexture, bulletTexture, false, 1.0f, 3, 7}.clone();
 
         Game game(window, player, enemyVector, boss);
