@@ -11,14 +11,14 @@ Game::Game(std::shared_ptr<sf::RenderWindow> window_, std::shared_ptr<Entity> pl
 
     //backgroundTexture.loadFromFile("./background.jpg");
     if (!backgroundTexture.loadFromFile("./background.jpg"))
-        throw textureError("background.jpg not found");
+        throw loadingError("background.jpg not found");
     //bossTexture.loadFromFile("./boss.png");
     //heartPTexture.loadFromFile("./heartP.png");
     if (!heartPTexture.loadFromFile("./heartP.png"))
-        throw textureError("heartP.png not found");
+        throw loadingError("heartP.png not found");
     //heartBTexture.loadFromFile("./heartB.png");
     if (!heartBTexture.loadFromFile("./heartB.png"))
-        throw textureError("heartB.png not found");
+        throw loadingError("heartB.png not found");
 
     background.setTexture(backgroundTexture);
     background.setPosition(0, 0);
@@ -59,7 +59,7 @@ Game::Game(std::shared_ptr<sf::RenderWindow> window_, std::shared_ptr<Entity> pl
 
     //font.loadFromFile("./retro.ttf");
     if (!font.loadFromFile("./retro.ttf"))
-        throw fontError("retro.ttf not found");
+        throw loadingError("retro.ttf not found");
     //textName("SPACE INVADERS", font, 50);
     textName.setString("SPACE INVADERS");
     textName.setFont(font);
@@ -104,7 +104,7 @@ Game::~Game() {
     window->close();
 }
 
-Game::Game(const Game &other) : window(other.window), clock(other.clock), player(other.player->clone()), enemyVector(other.enemyVector), boss(other.boss->clone()),
+Game::Game(const Game &other) : window(other.window), clock(other.clock), player(other.player->clone()), boss(other.boss->clone()),
                                 backgroundTexture(other.backgroundTexture), heartPTexture(other.heartPTexture),
                                 heartBTexture(other.heartBTexture), background(other.background), heartP(other.heartP), heartBVector(other.heartBVector),
                                 textHeartPlayer(other.textHeartPlayer), textScore(other.textScore), textHeartBoss(other.textHeartBoss), textName(other.textName),
@@ -112,8 +112,8 @@ Game::Game(const Game &other) : window(other.window), clock(other.clock), player
                                 transition(other.transition),endGame(other.endGame) {
     //player = std::dynamic_pointer_cast<Player>(other.player->clone());
     //player = other.player->clone();
-    //for (const auto& enemy : other.enemyVector)
-    //    enemyVector.push_back(enemy->clone());
+    for (const auto& enemy : other.enemyVector)
+        enemyVector.push_back(enemy->clone());
     //boss = other.boss->clone();
 
 }

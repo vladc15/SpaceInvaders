@@ -13,8 +13,8 @@ Player::Player() : Entity() { bulletVector.clear(); bulletCooldown.restart();}
 Player::Player(float x_, float y_, sf::Texture &texture_, sf::Texture &bulletTexture_, int bulletCooldownTime_,
                bool alive_, float speed_, int health_, int score_) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), bulletCooldownTime(bulletCooldownTime_), score(score_)
                { bulletVector.clear(); bulletCooldown.restart(); sprite.setPosition(x_, y_);
-                 if (bulletCooldownTime_ <= 0) throw playerError("bulletCooldownTime must be positive");
-                 if (score_ < 0) throw playerError("score must be positive");
+                 if (bulletCooldownTime_ <= 0) throw entityError("bulletCooldownTime must be positive");
+                 if (score_ < 0) throw entityError("score must be positive");
                }
 
 [[maybe_unused]] std::shared_ptr<Entity> Player::clone() const {

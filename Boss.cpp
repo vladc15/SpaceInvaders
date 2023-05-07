@@ -11,8 +11,8 @@ void Boss::moveSingleBullet(Bullet &bullet) const {
 Boss::Boss(float x_, float y_, float direction_, sf::Texture &texture_, sf::Texture &bulletTexture_, bool alive_,
            float speed_, int health_, int regenerationTime_) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), direction(direction_), regenerationTime(regenerationTime_)
            { bulletVector.clear(); sprite.setPosition(x_, y_);
-             if (std::abs(direction_) != 1) throw bossError("boss direction must be 1 or -1");
-             if (regenerationTime_ < 0) throw bossError("regeneration time must be positive");
+             if (std::abs(direction_) != 1) throw entityError("boss direction must be 1 or -1");
+             if (regenerationTime_ < 0) throw entityError("regeneration time must be positive");
            }
 
 [[maybe_unused]] std::shared_ptr<Entity> Boss::clone() const {

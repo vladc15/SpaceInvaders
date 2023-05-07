@@ -58,11 +58,8 @@ int main() {
     catch (const entityError &err) {
         std::cout << "Entity error: " << err.what() << "\n";
     }
-    catch (const textureError &err) {
-        std::cout << "Texture error: " << err.what() << "\n";
-    }
-    catch (const fontError &err) {
-        std::cout << "Font error: " << err.what() << "\n";
+    catch (const loadingError &err) {
+        std::cout << "Loading error: " << err.what() << "\n";
     }
     catch (const appError &err) {
         std::cout << err.what() << "\n";
