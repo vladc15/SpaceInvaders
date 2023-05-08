@@ -10,8 +10,6 @@
 class Enemy : public Entity {
     float direction = 1.0f;
 
-    static int enemyCount;
-
     void print(std::ostream& os) const override;
 
     void moveSingleBullet(Bullet& bullet) const override;
@@ -27,9 +25,6 @@ public:
 
     /// getters + setters
     //float getSpeed() const { return speed; }
-    static int getEnemyCount();
-
-    static void downEnemyCount();
 
     /// cc
     //Enemy (const Enemy& other);

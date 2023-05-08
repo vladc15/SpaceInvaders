@@ -37,14 +37,14 @@ int main() {
         bulletTexture.loadFromFile("bulletP.png");
 
         std::vector<std::shared_ptr<Entity>> enemyVector;
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 2; i++)
             enemyVector.emplace_back(
-                    Enemy{(float) ((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3)) * 1.0), 90, 1,
+                    Enemy{(float) ((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3)) * 1.0), 200, 1,
                           enemyTexture, bulletTexture, true, 1.0f}.clone());
 
         for (int i = 0; i < 1; i++)
             enemyVector.emplace_back(
-                    Enemy{(float) ((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3)) * 1.0), 200, 1,
+                    Enemy{(float) ((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3)) * 1.0), 90, 1,
                           enemyTexture, bulletTexture, true, 1}.clone());
 
         Player player(350, 500, playerTexture, bulletTexture, 250);

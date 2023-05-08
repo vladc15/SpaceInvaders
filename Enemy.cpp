@@ -1,7 +1,5 @@
 #include "Enemy.h"
 
-int Enemy::enemyCount = 0;
-
 void Enemy::print(std::ostream &os) const {
     os << "Enemy: " << direction;
 }
@@ -10,11 +8,11 @@ void Enemy::moveSingleBullet(Bullet &bullet) const {
     bullet.move(1);
 }
 
-Enemy::Enemy() : Entity() { bulletVector.clear(); sprite.setPosition(0, 0); enemyCount++;}
+Enemy::Enemy() : Entity() { bulletVector.clear(); sprite.setPosition(0, 0);}
 
 Enemy::Enemy(float x_, float y_, float direction_, sf::Texture &texture_, sf::Texture &bulletTexture_, bool alive_,
              float speed_, int health_) : Entity(x_, y_, texture_, bulletTexture_, alive_, speed_, health_), direction(direction_)
-             { bulletVector.clear(); sprite.setTexture(texture_); sprite.setPosition(x_, y_); enemyCount++;
+             { bulletVector.clear(); sprite.setTexture(texture_); sprite.setPosition(x_, y_);
                if (std::abs(direction_) != 1) throw entityError("enemy direction must be 1 or -1");
              }
 
@@ -39,10 +37,6 @@ void Enemy::move(int direction_) {
 void Enemy::shoot() {
     bulletVector.emplace_back(position.getX() + BULLET_SIZE, position.getY() + 2*BULLET_SIZE, bulletTexture);
 }
-
-int Enemy::getEnemyCount() { return enemyCount; }
-
-void Enemy::downEnemyCount() { enemyCount--; }
 
 /*Enemy::~Enemy() {
     std::cout << "Enemy destructor\n";

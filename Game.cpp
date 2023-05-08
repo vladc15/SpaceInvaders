@@ -384,7 +384,6 @@ void Game::update() {
             if (enemy->intersectsBullet(*itBullet)) {
                 itBullet = playerBullet.erase(itBullet);
                 enemy->setAlive(false);
-                Enemy::downEnemyCount();
                 //if (auto* playerPtr = dynamic_cast<Player*>(player.get()))
                 //    playerPtr->setScore(playerPtr->getScore() + ENEMY_POINTS);
                 player.setScore(player.getScore() + ENEMY_POINTS);
@@ -420,7 +419,14 @@ void Game::update() {
         }
     //enemyVector.erase(std::remove_if(enemyVector.begin(), enemyVector.end(), [](const Enemy& enemy) { return !enemy.getAlive(); }), enemyVector.end());
 
-    if (!Enemy::getEnemyCount() && !boss->getAlive()){
+    int okAlive = 0;
+    for (auto& enemy : enemyVector)
+        if (enemy->getAlive()) {
+            okAlive = 1;
+            break;
+        }
+
+    if (!okAlive && !boss->getAlive()){
         transition = true;
 
         boss->setAlive(true);
