@@ -27,7 +27,7 @@ void Enemy::move() {
         direction *= -1;
         position.setY(position.getY() + 1.2f * ENTITY_SIZE);
     }
-    position.setX(position.getX() + direction * 2.0f);
+    position.setX(position.getX() + direction * 2.0f * speed);
     sprite.setPosition(position.getX(), position.getY());
 }
 

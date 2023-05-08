@@ -27,9 +27,9 @@ void Player::setScore(int score_) { this->score = score_; }
 
 void Player::move(int direction_) {
     if (direction_ == 0 && position.getX() > 0)
-        position.setX(position.getX() - 2);
+        position.setX(position.getX() - 2 * speed);
     else if (direction_ == 1 && position.getX() < SCREEN_WIDTH-ENTITY_SIZE-2)
-        position.setX(position.getX() + 2);
+        position.setX(position.getX() + 2 * speed);
     sprite.setPosition(position.getX(), position.getY());
 }
 
