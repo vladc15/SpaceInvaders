@@ -8,6 +8,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Enemy2.h"
 #include "Boss.h"
 #include "Exceptions.h"
 
