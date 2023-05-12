@@ -10,21 +10,10 @@ void Game::initRandom() {
 
 Game::Game(std::shared_ptr<sf::RenderWindow> window_, Player player_,
            std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_) : window(std::move(window_)), player(std::move(player_)), enemyVector(std::move(enemyVector_)), boss(std::move(boss_)), displayMenu(true), transition(false), endGame(0) {
-    /// sau creez pointerii in main si ii dau ca parametrii ai constructorului
-    //window = std::make_shared<sf::RenderWindow>(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Space Invaders");
-
-    //playerTexture.loadFromFile("./player.png");
-    //bulletTexture.loadFromFile("./bulletP.png");
-    //enemyTexture.loadFromFile("./enemy.png");
-
-    //backgroundTexture.loadFromFile("./background.jpg");
     if (!backgroundTexture.loadFromFile("./background.jpg"))
         throw loadingError("background.jpg not found");
-    //bossTexture.loadFromFile("./boss.png");
-    //heartPTexture.loadFromFile("./heartP.png");
     if (!heartPTexture.loadFromFile("./heartP.png"))
         throw loadingError("heartP.png not found");
-    //heartBTexture.loadFromFile("./heartB.png");
     if (!heartBTexture.loadFromFile("./heartB.png"))
         throw loadingError("heartB.png not found");
 
@@ -44,28 +33,6 @@ Game::Game(std::shared_ptr<sf::RenderWindow> window_, Player player_,
     heartBVector.push_back(heartB1); heartBVector.push_back(heartB2); heartBVector.push_back(heartB3);
 
 
-//        std::random_device rd;
-//        std::mt19937 rng(rd());
-//        rng.seed(rd());
-//        std::uniform_int_distribution<int> dist(0, SCREEN_WIDTH-ENTITY_SIZE);
-
-    //enemy.setPosition(Point((float)dist(rng), 150)); /// facem random si poz
-    /*Player player(350, 500, playerTexture, bulletTexture, 250);
-    std::vector<Enemy> enemyVector;
-    enemyVector.clear();
-    for (int i = 0; i < 1; i++) {
-        Enemy enemy((float)((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3))*1.0), 90, 1, enemyTexture, bulletTexture, true, 1.0f);
-        enemyVector.emplace_back(enemy);
-    }
-
-    for (int i = 0; i < 1; i++) {
-        Enemy enemy((float)((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3))*1.0), 200, 1, enemyTexture, bulletTexture, true, 1);
-        enemyVector.emplace_back(enemy);
-    }
-
-    Boss boss(350, 100, 1, bossTexture, bulletTexture, false, 1.0f, 3, 7);*/
-
-    //font.loadFromFile("./retro.ttf");
     if (!font.loadFromFile("./retro.ttf"))
         throw loadingError("retro.ttf not found");
     //textName("SPACE INVADERS", font, 50);
@@ -118,12 +85,8 @@ Game::Game(const Game &other) : window(other.window), clock(other.clock), player
                                 textHeartPlayer(other.textHeartPlayer), textScore(other.textScore), textHeartBoss(other.textHeartBoss), textName(other.textName),
                                 textStart(other.textStart), textExit(other.textExit), font(other.font), displayMenu(other.displayMenu),
                                 transition(other.transition),endGame(other.endGame) {
-    //player = std::dynamic_pointer_cast<Player>(other.player->clone());
-    //player = other.player->clone();
     for (const auto& enemy : other.enemyVector)
         enemyVector.push_back(enemy->clone());
-    //boss = other.boss->clone();
-
 }
 
 void swap(Game &game1, Game &game2) {
@@ -205,12 +168,6 @@ void Game::render() {
     window->draw(textHeartPlayer);
     window->draw(heartP);
     window->draw(textScore);
-//    if (auto* playerPtr = dynamic_cast<Player*>(player.get())) {
-//        sf::Text Score(std::to_string(playerPtr->getScore()), font, 30);
-//        Score.setFillColor(sf::Color::White);
-//        Score.setPosition(150, 50);
-//        window->draw(Score);
-//    }
     sf::Text Score(std::to_string(player.getScore()), font, 30);
     Score.setFillColor(sf::Color::White);
     Score.setPosition(150, 50);
@@ -321,13 +278,6 @@ void Game::displayGameEnd() {
         window->draw(textLose);
     }
 
-//    if (auto* playerPtr = dynamic_cast<Player*>(player.get())) {
-//        sf::Text textFinalScore("You have " + std::to_string(playerPtr->getScore()) + " points!", font, 30);
-//        textFinalScore.setFillColor(sf::Color::White);
-//        textFinalScore.setPosition((float)SCREEN_WIDTH / 2 - 250, (float)SCREEN_HEIGHT / 2 + 100);
-//
-//        window->draw(textFinalScore);
-//    }
     sf::Text textFinalScore("You have " + std::to_string(player.getScore()) + " points!", font, 30);
     textFinalScore.setFillColor(sf::Color::White);
     textFinalScore.setPosition((float)SCREEN_WIDTH / 2 - 250, (float)SCREEN_HEIGHT / 2 + 100);
@@ -374,6 +324,11 @@ void Game::update() {
             if (auto* bossPtr = dynamic_cast<Boss*>(boss.get()))
                 bossPtr->regenerate();
         }
+        else
+            if (boss->getHealth() == 3) {
+                if (auto* bossPtr = dynamic_cast<Boss*>(boss.get()))
+                    bossPtr->restartClock();
+            }
         //boss.regenerate();
     }
 
@@ -495,5 +450,3 @@ void Game::run() {
     }
 
 }
-
-

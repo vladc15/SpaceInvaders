@@ -37,6 +37,7 @@ int main() {
         bulletTexture.loadFromFile("bulletP.png");
 
         std::vector<std::shared_ptr<Entity>> enemyVector;
+        enemyVector.reserve(2);
         for (int i = 0; i < 2; i++)
             enemyVector.emplace_back(
                     Enemy{(float) ((i * 1.0 * SCREEN_WIDTH) / 3.0 + (dist(rng) % (SCREEN_WIDTH / 3)) * 1.0), 200, 1,
