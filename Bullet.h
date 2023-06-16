@@ -4,18 +4,18 @@
 #include "Point.h"
 
 class Bullet {
-    Point<int> position;
+    Point<float> position;
     sf::Texture texture;
     sf::Sprite sprite;
 
 public:
     /// constructor + destructor
     Bullet();
-    Bullet(int x_, int y_, sf::Texture& texture_);
+    Bullet(float x_, float y_, sf::Texture& texture_);
     ~Bullet() = default;
 
     /// getters + setters
-    Point<int> getPosition() const;
+    Point<float> getPosition() const;
     sf::Sprite getSprite() const;
 
     /// cc
