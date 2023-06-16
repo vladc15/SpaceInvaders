@@ -27,7 +27,8 @@ public:
     Point& operator=(const Point& other) = default;
 
     /// operator<<
-    friend std::ostream& operator<<(std::ostream& os, const Point& point);
+    template<class U>
+    friend std::ostream& operator<<(std::ostream& os, const Point<U>& point);
 };
 
 #include "Point.cpp"
