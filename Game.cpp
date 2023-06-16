@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include <utility>
+
 std::random_device Game::rd;
 std::mt19937 Game::rng(Game::rd());
 std::uniform_int_distribution<int> Game::dist(0, SCREEN_WIDTH-ENTITY_SIZE);
@@ -79,15 +81,15 @@ Game::~Game() {
     window->close();
 }
 
-Game::Game(const Game &other) : window(other.window), clock(other.clock), player(other.player), boss(other.boss->clone()),
-                                backgroundTexture(other.backgroundTexture), heartPTexture(other.heartPTexture),
-                                heartBTexture(other.heartBTexture), background(other.background), heartP(other.heartP), heartBVector(other.heartBVector),
-                                textHeartPlayer(other.textHeartPlayer), textScore(other.textScore), textHeartBoss(other.textHeartBoss), textName(other.textName),
-                                textStart(other.textStart), textExit(other.textExit), font(other.font), displayMenu(other.displayMenu),
-                                transition(other.transition),endGame(other.endGame) {
-    for (const auto& enemy : other.enemyVector)
-        enemyVector.push_back(enemy->clone());
-}
+//Game::Game(const Game &other) : window(other.window), clock(other.clock), player(other.player), boss(other.boss->clone()),
+//                                backgroundTexture(other.backgroundTexture), heartPTexture(other.heartPTexture),
+//                                heartBTexture(other.heartBTexture), background(other.background), heartP(other.heartP), heartBVector(other.heartBVector),
+//                                textHeartPlayer(other.textHeartPlayer), textScore(other.textScore), textHeartBoss(other.textHeartBoss), textName(other.textName),
+//                                textStart(other.textStart), textExit(other.textExit), font(other.font), displayMenu(other.displayMenu),
+//                                transition(other.transition),endGame(other.endGame) {
+//    for (const auto& enemy : other.enemyVector)
+//        enemyVector.push_back(enemy->clone());
+//}
 
 void swap(Game &game1, Game &game2) {
     std::swap(game1.window, game2.window);
@@ -117,10 +119,10 @@ void swap(Game &game1, Game &game2) {
     std::swap(game1.boss, game2.boss);
 }
 
-Game &Game::operator=(Game other) {
-    swap(*this, other);
-    return *this;
-}
+//Game &Game::operator=(Game other) {
+//    swap(*this, other);
+//    return *this;
+//}
 
 std::ostream &operator<<(std::ostream &os, const Game &game) {
     os << "Game:\n";
@@ -449,4 +451,10 @@ void Game::run() {
         render();
     }
 
+}
+
+Game &Game::getInstance(std::shared_ptr<sf::RenderWindow> window_, Player player_,
+                        std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_) {
+    static Game instance(std::move(window_), std::move(player_), std::move(enemyVector_), std::move(boss_));
+    return instance;
 }

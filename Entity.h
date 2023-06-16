@@ -14,7 +14,7 @@ const int BULLET_SIZE = 16;
 class Entity {
 
 protected:
-    Point position;
+    Point<float> position;
     sf::Sprite sprite;
     sf::Texture texture;
     sf::Texture bulletTexture;
@@ -44,13 +44,13 @@ public:
     [[maybe_unused]] virtual std::shared_ptr<Entity> clone() const = 0;
     /// getters + setters
 
-    Point getPosition() const;
+    Point<float> getPosition() const;
     std::vector<Bullet>& getBulletVector();
     sf::Sprite& getSprite();
     bool getAlive() const;
     int getHealth() const;
 
-    void setPosition(const Point& position_);
+    void setPosition(const Point<float>& position_);
     void setAlive(bool alive_);
     void setHealth(int health_);
 

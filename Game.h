@@ -42,21 +42,24 @@ class Game {
     bool transition = false;
     int endGame = 0;
 
+    Game(std::shared_ptr<sf::RenderWindow> window_, Player player_,  std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_);
+
 public:
     /// constructor + destructor
-    Game(std::shared_ptr<sf::RenderWindow> window_, Player player_,  std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_);
     ~Game();
+
+    static Game &getInstance(std::shared_ptr<sf::RenderWindow> window_, Player player_,  std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_);
 
 
     /// getters + setters
     /// cc
-    Game(const Game& other);
+    Game(const Game& other) = delete;
 
 
     friend void swap(Game &game1, Game &game2);
 
     /// operator=
-    Game &operator=(Game other);
+    Game &operator=(Game other) = delete;
 
     /// operator<<
     friend std::ostream& operator<<(std::ostream& os, const Game& game);

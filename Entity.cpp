@@ -12,13 +12,13 @@ Entity::Entity(float x_, float y_, sf::Texture &texture_, sf::Texture &bulletTex
                      throw entityError("position must be in the screen limits");
                }
 
-Point Entity::getPosition() const { return position; }
+Point<float> Entity::getPosition() const { return position; }
 std::vector<Bullet> &Entity::getBulletVector() { return bulletVector; }
 sf::Sprite &Entity::getSprite() { return sprite; }
 int Entity::getHealth() const { return health; }
 bool Entity::getAlive() const { return alive; }
 
-void Entity::setPosition(const Point &position_) { this->position = position_; }
+void Entity::setPosition(const Point<float> &position_) { this->position = position_; }
 void Entity::setHealth(int health_) { this->health = health_; }
 void Entity::setAlive(bool alive_) { this->alive = alive_; }
 
@@ -41,8 +41,8 @@ void Entity::moveBullets() {
 }
 
 int Entity::intersectsBullet(const Bullet &bullet) {
-    return (position.getX() < bullet.getPosition().getX() + BULLET_SIZE) && (position.getX() + ENTITY_SIZE > bullet.getPosition().getX())
-           && (position.getY() < bullet.getPosition().getY() + BULLET_SIZE) && (position.getY() + ENTITY_SIZE > bullet.getPosition().getY());
+    return (position.getX() < ((float)bullet.getPosition().getX()) + BULLET_SIZE) && (position.getX() + ENTITY_SIZE > ((float)bullet.getPosition().getX()))
+           && (position.getY() < ((float)bullet.getPosition().getY()) + BULLET_SIZE) && (position.getY() + ENTITY_SIZE > ((float)bullet.getPosition().getY()));
 }
 
 bool Entity::intersectsEntity(const Entity &entity) {

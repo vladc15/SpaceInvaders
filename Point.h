@@ -2,22 +2,23 @@
 
 #include <iostream>
 
+template<class T>
 class Point {
-    float x;
-    float y;
+    T x;
+    T y;
 
 public:
     /// constructor + destructor
     Point();
-    Point(float x, float y);
+    Point(T x, T y);
     ~Point() = default;
 
     /// getters + setters
-    [[nodiscard]] float getX() const;
-    [[nodiscard]] float getY() const;
+    [[nodiscard]] T getX() const;
+    [[nodiscard]] T getY() const;
 
-    void setX(float x_);
-    void setY(float y_);
+    [[maybe_unused]] void setX(T x_);
+    void setY(T y_);
 
     /// cc
     Point(const Point& other) = default;
@@ -28,3 +29,5 @@ public:
     /// operator<<
     friend std::ostream& operator<<(std::ostream& os, const Point& point);
 };
+
+#include "Point.cpp"
