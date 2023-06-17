@@ -16,10 +16,12 @@ class Player : public Entity {
 
     void moveSingleBullet(Bullet& bullet) const override;
 
-public:
-    /// constructor + destructor
     explicit Player();
     explicit Player(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, int bulletCooldownTime_, bool alive_ = true, float speed_ = 1, int health_ = 1, int score_ = 0);
+
+public:
+    /// constructor + destructor
+
     //~Player() { std::cout << "Player destructor\n";}
     [[maybe_unused]] std::shared_ptr<Entity> clone() const override;
 //    Player() : position(0, 0) { bulletVector.clear(); bulletCooldown.restart();}
@@ -27,15 +29,16 @@ public:
 //    ~Player() { std::cout << "Player destructor\n";}
     //~Player() override;
 
+    static Player& getInstance(float x_, float y_, sf::Texture& texture_, sf::Texture& bulletTexture_, int bulletCooldownTime_, bool alive_ = true, float speed_ = 1, int health_ = 1, int score_ = 0);
 
     /// getters + setters
     int getScore() const;
 
     void setScore(int score_);
     /// cc
-    //Player (const Player& other);
+    Player (const Player& other) = delete;
     /// operator=
-    //Player& operator=(const Player& other);
+    Player& operator=(const Player& other) = delete;
     /// warning pentru operator= de la clion
 
     void move(int direction_) override;

@@ -18,7 +18,8 @@ Player::Player(float x_, float y_, sf::Texture &texture_, sf::Texture &bulletTex
                }
 
 [[maybe_unused]] std::shared_ptr<Entity> Player::clone() const {
-    return std::make_shared<Player>(*this);
+    //return std::make_shared<Player>(*this);
+    return nullptr;
 }
 
 int Player::getScore() const { return score; }
@@ -40,6 +41,12 @@ void Player::shoot() {
         bulletCooldown.restart();
         bulletVector.emplace_back(position.getX(), position.getY(), bulletTexture);
     }
+}
+
+Player &Player::getInstance(float x_, float y_, sf::Texture &texture_, sf::Texture &bulletTexture_, int bulletCooldownTime_,
+                    bool alive_, float speed_, int health_, int score_) {
+    static Player instance(x_, y_, texture_, bulletTexture_, bulletCooldownTime_, alive_, speed_, health_, score_);
+    return instance;
 }
 
 /*Player::~Player() {

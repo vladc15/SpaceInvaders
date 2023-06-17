@@ -10,8 +10,8 @@ void Game::initRandom() {
     rng.seed(rd());
 }
 
-Game::Game(std::shared_ptr<sf::RenderWindow> window_, Player player_,
-           std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_) : window(std::move(window_)), player(std::move(player_)), enemyVector(std::move(enemyVector_)), boss(std::move(boss_)), displayMenu(true), transition(false), endGame(0) {
+Game::Game(std::shared_ptr<sf::RenderWindow> window_, Player& player_,
+           std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_) : window(std::move(window_)), player(player_), enemyVector(std::move(enemyVector_)), boss(std::move(boss_)), displayMenu(true), transition(false), endGame(0) {
     if (!backgroundTexture.loadFromFile("./background.jpg"))
         throw loadingError("background.jpg not found");
     if (!heartPTexture.loadFromFile("./heartP.png"))
@@ -114,7 +114,7 @@ void swap(Game &game1, Game &game2) {
     std::swap(game1.displayMenu, game2.displayMenu);
     std::swap(game1.transition, game2.transition);
     std::swap(game1.endGame, game2.endGame);
-    std::swap(game1.player, game2.player);
+    //std::swap(game1.player, game2.player);
     std::swap(game1.enemyVector, game2.enemyVector);
     std::swap(game1.boss, game2.boss);
 }
@@ -453,8 +453,8 @@ void Game::run() {
 
 }
 
-Game &Game::getInstance(std::shared_ptr<sf::RenderWindow> window_, Player player_,
+Game &Game::getInstance(std::shared_ptr<sf::RenderWindow> window_, Player& player_,
                         std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_) {
-    static Game instance(std::move(window_), std::move(player_), std::move(enemyVector_), std::move(boss_));
+    static Game instance(std::move(window_), player_, std::move(enemyVector_), std::move(boss_));
     return instance;
 }

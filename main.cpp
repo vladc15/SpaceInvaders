@@ -50,25 +50,22 @@ int main() {
 //                          enemyTexture, bulletTexture, true, 1}.clone());
 
         std::vector<std::shared_ptr<Entity>> enemyVector;
-        enemyVector.reserve(3);
+        enemyVector.reserve(4);
 
         std::shared_ptr<EnemiesFactory> enemyFactory = std::make_shared<EnemyFactory>();
         std::vector<std::shared_ptr<Entity>> enemy1Vector = enemyFactory->createEnemies(enemyTexture, bulletTexture);
 
-        //enemyVector.insert(enemyVector.end(), enemy1Vector.begin(), enemy1Vector.end());
-        for (auto &enemy : enemy1Vector)
-            enemyVector.emplace_back(enemy);
+        enemyVector.insert(enemyVector.end(), enemy1Vector.begin(), enemy1Vector.end());
 
         enemyFactory = std::make_shared<Enemy2Factory>();
         std::vector<std::shared_ptr<Entity>> enemy2Vector = enemyFactory->createEnemies(enemyTexture, bulletTexture);
 
-        //enemyVector.insert(enemyVector.end(), enemy2Vector.begin(), enemy2Vector.end());
-        for (auto &enemy : enemy2Vector)
-            enemyVector.emplace_back(enemy);
+        enemyVector.insert(enemyVector.end(), enemy2Vector.begin(), enemy2Vector.end());
 
 
 
-        Player player(350, 500, playerTexture, bulletTexture, 250);
+        //Player player(350, 500, playerTexture, bulletTexture, 250);
+        auto& player = Player::getInstance(350, 500, playerTexture, bulletTexture, 250);
         std::shared_ptr<Entity> boss = Boss{350, 100, 1, bossTexture, bulletTexture, false, 1.0f, 3, 7}.clone();
 
         //Game game(window, player, enemyVector, boss);
