@@ -94,7 +94,7 @@ endif()
 ###############################################################################
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
-add_executable(${PROJECT_NAME} main.cpp Bullet.cpp Bullet.h Entity.cpp Entity.h Entity.h Player.cpp Player.h Player.h Enemy.cpp Enemy.h Enemy.h Boss.cpp Boss.h Game.cpp Game.h Game.h Exceptions.cpp Exceptions.h Exceptions.h Enemy2.cpp Enemy2.h EnemiesFactory.cpp EnemiesFactory.h)
+add_executable(${PROJECT_NAME} main.cpp src/Bullet.cpp include/Bullet.h src/Entity.cpp include/Entity.h include/Entity.h src/Player.cpp include/Player.h include/Player.h src/Enemy.cpp include/Enemy.h include/Enemy.h src/Boss.cpp include/Boss.h src/Game.cpp include/Game.h include/Game.h src/Exceptions.cpp include/Exceptions.h include/Exceptions.h src/Enemy2.cpp include/Enemy2.h src/EnemiesFactory.cpp include/EnemiesFactory.h)
 
 ###############################################################################
 
@@ -144,4 +144,4 @@ endif()
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 # install(DIRECTORY some_dir1 some_dir2 DESTINATION bin)
 
-install(FILES player.png enemy.png bulletP.png background.jpg boss.png heartP.png heartB.png retro.ttf DESTINATION bin)
+install(FILES img/player.png img/enemy.png img/bulletP.png img/background.jpg img/boss.png img/heartP.png img/heartB.png retro.ttf DESTINATION bin)

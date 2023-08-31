@@ -1,4 +1,4 @@
-#include "Exceptions.h"
+#include "../include/Exceptions.h"
 
 entityError::entityError(const std::string &message) : appError(std::string("Entity creation failed: ") + message) {}
 

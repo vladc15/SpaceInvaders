@@ -1,4 +1,4 @@
-#include "Bullet.h"
+#include "../include/Bullet.h"
 
 Bullet::Bullet() : position(0, 0) {}
 

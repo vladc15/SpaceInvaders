@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "../include/Player.h"
 
 void Player::print(std::ostream &os) const {
     os << "Player:" << score;

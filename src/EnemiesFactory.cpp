@@ -1,4 +1,4 @@
-#include "EnemiesFactory.h"
+#include "../include/EnemiesFactory.h"
 
 std::vector<std::shared_ptr<Entity>> EnemyFactory::createEnemies(sf::Texture& enemyTexture_, sf::Texture& bulletTexture_) {
     std::vector<std::shared_ptr<Entity>> enemy1Vector;

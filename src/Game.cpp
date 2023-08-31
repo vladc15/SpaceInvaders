@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "../include/Game.h"
 
 #include <utility>
 
@@ -12,11 +12,11 @@ void Game::initRandom() {
 
 Game::Game(std::shared_ptr<sf::RenderWindow> window_, Player& player_,
            std::vector<std::shared_ptr<Entity>> enemyVector_, std::shared_ptr<Entity> boss_) : window(std::move(window_)), player(player_), enemyVector(std::move(enemyVector_)), boss(std::move(boss_)), displayMenu(true), transition(false), endGame(0) {
-    if (!backgroundTexture.loadFromFile("./background.jpg"))
+    if (!backgroundTexture.loadFromFile("img/background.jpg"))
         throw loadingError("background.jpg not found");
-    if (!heartPTexture.loadFromFile("./heartP.png"))
+    if (!heartPTexture.loadFromFile("img/heartP.png"))
         throw loadingError("heartP.png not found");
-    if (!heartBTexture.loadFromFile("./heartB.png"))
+    if (!heartBTexture.loadFromFile("img/heartB.png"))
         throw loadingError("heartB.png not found");
 
     background.setTexture(backgroundTexture);

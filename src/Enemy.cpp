@@ -1,4 +1,4 @@
-#include "Enemy.h"
+#include "../include/Enemy.h"
 
 void Enemy::print(std::ostream &os) const {
     os << "Enemy: " << direction;

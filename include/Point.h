@@ -31,4 +31,4 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Point<U>& point);
 };
 
-#include "Point.cpp"
+#include "../src/Point.cpp"

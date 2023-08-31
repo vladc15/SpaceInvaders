@@ -1,9 +1,9 @@
 # Space Invaders
 
-<p align="center">
-  <img src="screenshot_start.png" width="180">
-  <img src="screenshot_phase1.png" width="180">
-  <img src="screenshot_phase2.png" width="180">
+<p>
+  <img src="img/screenshot_start.png" width="250" alt="">
+  <img src="img/screenshot_phase1.png" width="250" alt="">
+  <img src="img/screenshot_phase2.png" width="250" alt="">
 </p>
 
   - Space Invaders este un joc arcade, de tip shooter, ce a aparut la sfarsitul anilor '70 in Japonia. In aceasta versiune, jucatorul controleaza o nava spatiala si trebuie sa infranga, mai intai, un wave de extraterestri, apoi un inamic final, acumuland puncte pe tot parcursul jocului. 

@@ -4,12 +4,12 @@
 #include <vector>
 #include <random>
 
-#include "Entity.h"
-#include "Player.h"
+#include "include/Entity.h"
+#include "include/Player.h"
 //#include "Enemy.h"
-#include "Boss.h"
-#include "Game.h"
-#include "EnemiesFactory.h"
+#include "include/Boss.h"
+#include "include/Game.h"
+#include "include/EnemiesFactory.h"
 
 #ifdef __linux__
 #include <X11/Xlib.h>
@@ -32,10 +32,10 @@ int main() {
                 sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Space Invaders");
 
         sf::Texture playerTexture, enemyTexture, bossTexture, bulletTexture;
-        playerTexture.loadFromFile("player.png");
-        enemyTexture.loadFromFile("enemy.png");
-        bossTexture.loadFromFile("boss.png");
-        bulletTexture.loadFromFile("bulletP.png");
+        playerTexture.loadFromFile("img/player.png");
+        enemyTexture.loadFromFile("img/enemy.png");
+        bossTexture.loadFromFile("img/boss.png");
+        bulletTexture.loadFromFile("img/bulletP.png");
 
 //        std::vector<std::shared_ptr<Entity>> enemyVector;
 //        enemyVector.reserve(2);

@@ -1,4 +1,4 @@
-#include "Boss.h"
+#include "../include/Boss.h"
 
 void Boss::print(std::ostream &os) const {
     os << "Boss: " << regenerationTime;
